@@ -1,0 +1,139 @@
+apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+
+android {
+    compileSdkVersion rootProject.ext.compileSdkVersion
+    buildToolsVersion rootProject.ext.buildToolsVersion
+
+    defaultConfig {
+        applicationId "com.coreproc.kotlin.kotlinbase"
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
+        versionCode code
+        versionName "${versionMajor}.${versionMinor}.${versionPatch}+${code}"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        flavorDimensions "default"
+    }
+
+    signingConfigs {
+        release {
+            keyAlias RELEASE_KEY_ALIAS
+            keyPassword RELEASE_KEY_PASSWORD
+            storeFile file(RELEASE_STORE_FILE)
+            storePassword RELEASE_STORE_PASSWORD
+        }
+    }
+
+    buildTypes {
+        debug {
+            applicationIdSuffix '.debug'
+        }
+        release {
+            signingConfig signingConfigs.release
+
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    productFlavors {
+
+        /**
+         * Internal Development
+         * */
+        develop {
+            versionName "${versionMajor}.${versionMinor}.${versionPatch}+${code}"
+            setProperty("archivesBaseName", "kotlin-base-" + versionName)
+            buildConfigField 'String', 'SENTRY_DSN', SENTRY_DEBUG_DSN
+            buildConfigField 'String', 'HOST', BASE_URL_DEVELOP
+            buildConfigField "boolean", "REPORT_CRASHES", "false"
+        }
+
+        /**
+         * Staging
+         * */
+        staging {
+            versionName "${versionMajor}.${versionMinor}.${versionPatch}+${code}"
+            setProperty("archivesBaseName", "kotlin-base-" + versionName)
+            buildConfigField 'String', 'SENTRY_DSN', SENTRY_DEBUG_DSN
+            buildConfigField 'String', 'HOST', BASE_URL_STAGING
+            buildConfigField "boolean", "REPORT_CRASHES", "true"
+        }
+
+        /**
+         * Play Store Release
+         * */
+        live {
+            versionName "${versionMajor}.${versionMinor}.${versionPatch}+${code}"
+            setProperty("archivesBaseName", "kotlin-base-" + versionName)
+            buildConfigField 'String', 'SENTRY_DSN', SENTRY_PROD_DSN
+            buildConfigField 'String', 'HOST', BASE_URL_PROD
+            buildConfigField "boolean", "REPORT_CRASHES", "true"
+        }
+    }
+}
+
+androidExtensions {
+    experimental = true
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
+    testImplementation "org.jetbrains.kotlin:kotlin-test:$kotlin_version"
+    testImplementation "org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version"
+
+    // App's dependencies
+    implementation "androidx.constraintlayout:constraintlayout:$rootProject.constraintVersion"
+    implementation "androidx.appcompat:appcompat:$rootProject.supportLibraryVersion"
+
+    // Lifecycle
+    implementation "android.arch.lifecycle:runtime:$project.lifecycleVersion"
+    implementation "android.arch.lifecycle:extensions:$project.lifecycleVersion"
+    implementation 'android.arch.lifecycle:extensions:1.1.1'
+    implementation 'android.arch.paging:runtime:1.0.1'
+    kapt "android.arch.lifecycle:compiler:$project.lifecycleVersion"
+
+    // RxJava
+    implementation "io.reactivex.rxjava2:rxjava:$rootProject.rxjavaVersion"
+    implementation "io.reactivex.rxjava2:rxandroid:$rootProject.rxandroidVersion"
+    implementation "io.reactivex.rxjava2:rxkotlin:$rootProject.rx_kotlin_version"
+
+    // Dagger dependencies
+    compileOnly 'org.glassfish:javax.annotation:10.0-b28'
+    implementation "com.google.dagger:dagger:$rootProject.daggerVersion"
+    implementation "com.google.dagger:dagger-android:$rootProject.daggerVersion"
+    implementation "com.google.dagger:dagger-android-support:$rootProject.daggerVersion"
+    kapt "com.google.dagger:dagger-compiler:$rootProject.daggerVersion"
+    kapt "com.google.dagger:dagger-android-processor:$rootProject.daggerVersion"
+
+    // Apache Common
+    implementation "org.apache.commons:commons-lang3:$rootProject.apacheVersion"
+
+    // Network
+    implementation "com.squareup.retrofit2:retrofit:$rootProject.retrofitVersion"
+    implementation "com.squareup.retrofit2:converter-gson:$rootProject.retrofitVersion"
+    implementation "com.squareup.retrofit2:adapter-rxjava2:$rootProject.retrofitVersion"
+    implementation "com.squareup.okhttp3:okhttp:$rootProject.okhttpVersion"
+    implementation "com.squareup.okhttp3:logging-interceptor:$rootProject.okhttpVersion"
+    implementation "com.google.code.gson:gson:$rootProject.gsonVersion"
+
+    // Glide 4
+    implementation "com.github.bumptech.glide:glide:$rootProject.glideVersion"
+    kapt "com.github.bumptech.glide:compiler:$rootProject.glideVersion"
+
+    // Testing
+    testImplementation "junit:junit:$rootProject.junitVersion"
+    testImplementation "org.mockito:mockito-all:$rootProject.mockitoVersion"
+    testImplementation "org.hamcrest:hamcrest-all:$rootProject.hamcrestVersion"
+    testImplementation "android.arch.core:core-testing:$project.lifecycleVersion"
+    androidTestImplementation "junit:junit:$rootProject.junitVersion"
+    androidTestImplementation "org.mockito:mockito-core:$rootProject.mockitoVersion"
+}

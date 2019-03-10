@@ -1,0 +1,74 @@
+// Top-level build file where you can add configuration options common to all sub-projects/modules.
+
+buildscript {
+    ext.kotlin_version = '1.3.21'
+    ext.kotlin_version = '1.3.10'
+    ext.gradle_version = '3.2.1'
+    ext.realm_version = '5.7.0'
+    ext.google_service_version = '4.0.1'
+    repositories {
+        google()
+        jcenter()
+    }
+    dependencies {
+        classpath "com.android.tools.build:gradle:$gradle_version"
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+
+        // NOTE: Do not place your application dependencies here; they belong
+        // in the individual module build.gradle files
+    }
+}
+
+allprojects {
+    repositories {
+        google()
+        jcenter()
+    }
+}
+
+task clean(type: Delete) {
+    delete rootProject.buildDir
+}
+
+rootProject.ext {
+    // Version Info
+
+    versionMajor = 0    // backward compatibility
+    versionMinor = 0    // new feature or a major behavior change
+    versionPatch = 1    // fixes or minor patch
+    code = new Date().format('yyMMddHHmm').toInteger()
+    
+    // Sdk and tools
+    minSdkVersion = 21
+    targetSdkVersion = 28
+    compileSdkVersion = 28
+
+    buildToolsVersion = '28.0.3'
+    crashlyticsVersion = '2.9.5'
+    multidexVersion = '1.0.3'
+
+    // App dependencies
+    supportLibraryVersion = '1.1.0-alpha01'
+    lifecycleVersion = '1.1.1'
+    constraintVersion = '2.0.0-alpha3'
+    playServicesVersion = '16.0.0'
+
+    rxjavaVersion = '2.2.2'
+    rxandroidVersion = '2.1.0'
+    rx_kotlin_version = '2.2.0'
+
+    apacheVersion = '3.7'
+
+    retrofitVersion = '2.4.0'
+    gsonVersion = '2.8.4'
+    okhttpVersion = '3.10.0'
+
+    daggerVersion = '2.16'
+
+    glideVersion = '4.8.0'
+
+    // Testing
+    junitVersion = '4.12'
+    mockitoVersion = '1.10.19'
+    hamcrestVersion = '1.3'
+}
