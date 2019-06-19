@@ -12,9 +12,6 @@ class MainActivity : BaseActivity() {
 
     private var viewModel: MainViewModel? = null
 
-    @Inject
-    lateinit var viewModelFactory: AppViewModelFactory
-
     override fun getLayoutResource(): Int = R.layout.activity_main
 
     override fun onCreate(savedInstanceState: Bundle?) {
