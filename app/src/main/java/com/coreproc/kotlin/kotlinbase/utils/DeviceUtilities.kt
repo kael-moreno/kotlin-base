@@ -6,7 +6,6 @@ import android.net.wifi.WifiManager
 import android.os.BatteryManager
 import android.os.Build
 import android.provider.Settings
-import android.telephony.SubscriptionManager
 import android.telephony.TelephonyManager
 import com.coreproc.kotlin.kotlinbase.App
 import java.text.SimpleDateFormat

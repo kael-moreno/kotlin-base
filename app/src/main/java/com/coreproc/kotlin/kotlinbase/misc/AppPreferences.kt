@@ -2,7 +2,6 @@ package com.coreproc.kotlin.kotlinbase.misc
 
 import android.content.Context
 import com.coreproc.kotlin.kotlinbase.App
-import com.google.gson.Gson
 
 object AppPreferences {
     private val API_KEY = "API_KEY"

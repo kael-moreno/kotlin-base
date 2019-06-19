@@ -1,13 +1,10 @@
 package com.coreproc.kotlin.kotlinbase.ui.base
 
-import android.os.Parcel
-import android.os.Parcelable
 import android.util.Log
 import androidx.annotation.MainThread
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
-
 import java.util.concurrent.atomic.AtomicBoolean
 
 
