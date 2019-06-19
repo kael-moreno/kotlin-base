@@ -1,6 +1,11 @@
 package com.coreproc.kotlin.kotlinbase.di.module
 
+import android.annotation.SuppressLint
+import android.os.Build
+import android.provider.Settings
+import com.coreproc.kotlin.kotlinbase.App
 import com.coreproc.kotlin.kotlinbase.BuildConfig
+import com.coreproc.kotlin.kotlinbase.misc.AppPreferences
 import com.coreproc.kotlin.kotlinbase.misc.common.SchedulersFacade
 import com.coreproc.kotlin.kotlinbase.utils.GsonUTCDateAdapter
 import com.google.gson.Gson
@@ -25,18 +30,44 @@ class NetworkClientModule {
         return HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY)
     }
 
+    @SuppressLint("HardwareIds")
     @Singleton
     @Provides
     internal fun provideHttpClient(logging: HttpLoggingInterceptor): OkHttpClient {
-        val TIMEOUT_SEC: Long = 20
+        val timeout: Long = 300
 
         val builder = OkHttpClient.Builder()
             .followRedirects(true)
             .followSslRedirects(true)
             .retryOnConnectionFailure(true)
-            .connectTimeout(TIMEOUT_SEC, TimeUnit.SECONDS)
-            .writeTimeout(TIMEOUT_SEC, TimeUnit.SECONDS)
-            .readTimeout(TIMEOUT_SEC, TimeUnit.SECONDS)
+            .connectTimeout(timeout, TimeUnit.SECONDS)
+            .writeTimeout(timeout, TimeUnit.SECONDS)
+            .readTimeout(timeout, TimeUnit.SECONDS)
+            .addInterceptor {
+                val builder = it.request()
+                    .newBuilder()
+                    .addHeader("X-Device-App-Version", BuildConfig.VERSION_NAME)
+                    .addHeader("Accept", "application/json")
+                    .addHeader("X-Device-OS", "android")
+                    .addHeader("X-Device-OS-Version", Build.VERSION.RELEASE)
+                    .addHeader("X-Device-Manufacturer", "" + Build.MANUFACTURER)
+                    .addHeader("X-Device-Model", "" + Build.MODEL)
+                    .addHeader(
+                        "X-Device-UUID",
+                        Settings.Secure.getString(
+                            App.instance!!.contentResolver,
+                            Settings.Secure.ANDROID_ID
+                        )
+                    )
+
+
+                AppPreferences.getApiKey()?.let { key ->
+                    builder.addHeader("X-Authorization", key)
+                }
+
+                it.proceed(builder.build())
+            }
+
 
         if (BuildConfig.DEBUG) {
             builder.addInterceptor(logging)
@@ -62,8 +93,9 @@ class NetworkClientModule {
 
     @Singleton
     @Provides
-    internal fun provideRetrofit(client: OkHttpClient,
-                                 gsonConverterFactory: GsonConverterFactory
+    internal fun provideRetrofit(
+        client: OkHttpClient,
+        gsonConverterFactory: GsonConverterFactory
     ): Retrofit {
         return Retrofit.Builder()
             .baseUrl(BuildConfig.HOST)

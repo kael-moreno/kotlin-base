@@ -2,9 +2,10 @@ package com.coreproc.kotlin.kotlinbase.ui.main
 
 import androidx.lifecycle.MutableLiveData
 import com.coreproc.kotlin.kotlinbase.data.remote.usecase.ApiUseCase
-import com.coreproc.kotlin.kotlinbase.misc.common.threadManageIoToUi
+import com.coreproc.kotlin.kotlinbase.extensions.addDefaultDoOn
+import com.coreproc.kotlin.kotlinbase.extensions.defaultSubscribeBy
+import com.coreproc.kotlin.kotlinbase.extensions.threadManageIoToUi
 import com.coreproc.kotlin.kotlinbase.ui.base.BaseViewModel
-import io.reactivex.rxkotlin.subscribeBy
 import javax.inject.Inject
 
 class MainViewModel
@@ -16,17 +17,10 @@ constructor(private val apiUseCase: ApiUseCase) : BaseViewModel() {
     fun getSomething() {
         compositeDisposable.add(apiUseCase.run("")
             .threadManageIoToUi()
-            .doOnSubscribe {
-                // load something here on start API Call
+            .addDefaultDoOn(this)
+            .defaultSubscribeBy(this) {
+                success.postValue(it)
             }
-            .subscribeBy(
-                onNext = {
-                    success.postValue(it)
-                },
-                onError = {
-                    error.postValue(it)
-                }
-            )
         )
     }
 

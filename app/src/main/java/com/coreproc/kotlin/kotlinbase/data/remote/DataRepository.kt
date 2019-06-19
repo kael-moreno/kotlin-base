@@ -6,10 +6,10 @@ import javax.inject.Inject
 class DataRepository
 @Inject
 constructor(
-    private val remoteStore: DataSourceRemote
+    private val apiInterface: ApiInterface
 ) : DataSource {
 
     override fun getSomething(): Observable<String> {
-        return remoteStore.getSomething()
+        return apiInterface.getSomething()
     }
 }
