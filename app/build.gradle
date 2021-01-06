@@ -48,7 +48,7 @@ android {
         /**
          * Internal Development
          * */
-        develop {
+        internal {
             versionName "${versionMajor}.${versionMinor}.${versionPatch}+${code}"
             setProperty("archivesBaseName", "kotlin-base-" + versionName)
             buildConfigField 'String', 'SENTRY_DSN', SENTRY_DEBUG_DSN
@@ -59,7 +59,7 @@ android {
         /**
          * Staging
          * */
-        staging {
+        develop {
             versionName "${versionMajor}.${versionMinor}.${versionPatch}+${code}"
             setProperty("archivesBaseName", "kotlin-base-" + versionName)
             buildConfigField 'String', 'SENTRY_DSN', SENTRY_DEBUG_DSN
@@ -70,7 +70,7 @@ android {
         /**
          * Play Store Release
          * */
-        live {
+        production {
             versionName "${versionMajor}.${versionMinor}.${versionPatch}+${code}"
             setProperty("archivesBaseName", "kotlin-base-" + versionName)
             buildConfigField 'String', 'SENTRY_DSN', SENTRY_PROD_DSN
@@ -100,7 +100,7 @@ dependencies {
     implementation "android.arch.lifecycle:extensions:$project.lifecycleVersion"
     implementation 'android.arch.lifecycle:extensions:1.1.1'
     implementation 'android.arch.paging:runtime:1.0.1'
-    kapt "android.arch.lifecycle:compiler:$project.lifecycleVersion"
+    kapt "android.arch.lifecycle:common-java8:$project.lifecycleVersion"
 
     // RxJava
     implementation "io.reactivex.rxjava2:rxjava:$rootProject.rxjavaVersion"
@@ -130,11 +130,4 @@ dependencies {
     implementation "com.github.bumptech.glide:glide:$rootProject.glideVersion"
     kapt "com.github.bumptech.glide:compiler:$rootProject.glideVersion"
 
-    // Testing
-    testImplementation "junit:junit:$rootProject.junitVersion"
-    testImplementation "org.mockito:mockito-all:$rootProject.mockitoVersion"
-    testImplementation "org.hamcrest:hamcrest-all:$rootProject.hamcrestVersion"
-    testImplementation "android.arch.core:core-testing:$project.lifecycleVersion"
-    androidTestImplementation "junit:junit:$rootProject.junitVersion"
-    androidTestImplementation "org.mockito:mockito-core:$rootProject.mockitoVersion"
 }
