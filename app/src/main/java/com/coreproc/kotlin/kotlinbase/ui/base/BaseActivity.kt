@@ -37,6 +37,8 @@ abstract class BaseActivity : DaggerAppCompatActivity() {
 
     protected var defaultToolbar: Toolbar? = null
 
+    private var viewModels = mutableListOf<BaseViewModel>()
+
     override fun setTitle(titleId: Int) {
 
         toolbar_title_text_view.setText(titleId)
@@ -53,6 +55,13 @@ abstract class BaseActivity : DaggerAppCompatActivity() {
         setContentView(R.layout.activity_base_layout)
 
         initUi()
+    }
+
+    override fun onDestroy() {
+        viewModels.forEach {
+            it.removeObservers(this)
+        }
+        super.onDestroy()
     }
 
     override fun onSupportNavigateUp(): Boolean {
@@ -78,8 +87,11 @@ abstract class BaseActivity : DaggerAppCompatActivity() {
 
 
     fun <T: BaseViewModel> initViewModel(viewModelClass: Class<T>): T {
-        return ViewModelProviders.of(this, viewModelFactory)
+        val viewModel = ViewModelProviders.of(this, viewModelFactory)
             .get(viewModelClass)
+        viewModel.observeCommonEvent(this)
+        viewModels.add(viewModel)
+        return viewModel
     }
 
 

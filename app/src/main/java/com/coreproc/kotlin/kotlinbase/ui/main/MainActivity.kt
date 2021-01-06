@@ -17,8 +17,7 @@ class MainActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        viewModel = ViewModelProviders.of(this, viewModelFactory)
-            .get(MainViewModel::class.java)
+        viewModel = initViewModel(MainViewModel::class.java)
         viewModel!!.success.observe(this, Observer { this.onSuccess(it) })
 
     }
