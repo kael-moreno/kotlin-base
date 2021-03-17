@@ -13,6 +13,7 @@ android {
         versionCode code
         versionName "${versionMajor}.${versionMinor}.${versionPatch}+${code}"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        buildConfigField 'String', 'SENTRY_DSN', SENTRY_DSN
         flavorDimensions "default"
     }
 
@@ -48,33 +49,30 @@ android {
          * Internal Development
          * */
         internal {
+            resValue "string", "app_name_variant", "[INTERNAL] ${APP_NAME}"
             versionName "${versionMajor}.${versionMinor}.${versionPatch}+${code}"
             setProperty("archivesBaseName", "kotlin-base-" + versionName)
-            buildConfigField 'String', 'SENTRY_DSN', SENTRY_DEBUG_DSN
-            buildConfigField 'String', 'HOST', BASE_URL_DEVELOP
-            buildConfigField "boolean", "REPORT_CRASHES", "false"
+            buildConfigField 'String', 'HOST', BASE_URL_INTERNAL
         }
 
         /**
          * Staging
          * */
-        develop {
+        staging {
+            resValue "string", "app_name_variant", "[STAGING] ${APP_NAME}"
             versionName "${versionMajor}.${versionMinor}.${versionPatch}+${code}"
             setProperty("archivesBaseName", "kotlin-base-" + versionName)
-            buildConfigField 'String', 'SENTRY_DSN', SENTRY_DEBUG_DSN
             buildConfigField 'String', 'HOST', BASE_URL_STAGING
-            buildConfigField "boolean", "REPORT_CRASHES", "true"
         }
 
         /**
          * Play Store Release
          * */
         production {
+            resValue "string", "app_name_variant", APP_NAME
             versionName "${versionMajor}.${versionMinor}.${versionPatch}+${code}"
             setProperty("archivesBaseName", "kotlin-base-" + versionName)
-            buildConfigField 'String', 'SENTRY_DSN', SENTRY_PROD_DSN
             buildConfigField 'String', 'HOST', BASE_URL_PROD
-            buildConfigField "boolean", "REPORT_CRASHES", "true"
         }
     }
 }
@@ -85,8 +83,8 @@ androidExtensions {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version_reflect"
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version_reflect"
+    implementation "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
     testImplementation "org.jetbrains.kotlin:kotlin-test:$kotlin_version"
     testImplementation "org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version"
 
@@ -97,7 +95,6 @@ dependencies {
     // Lifecycle
     implementation "android.arch.lifecycle:runtime:$project.lifecycleVersion"
     implementation "android.arch.lifecycle:extensions:$project.lifecycleVersion"
-    implementation 'android.arch.lifecycle:extensions:1.1.1'
     implementation 'android.arch.paging:runtime:1.0.1'
     kapt "android.arch.lifecycle:common-java8:$project.lifecycleVersion"
 
@@ -128,5 +125,8 @@ dependencies {
     // Glide 4
     implementation "com.github.bumptech.glide:glide:$rootProject.glideVersion"
     kapt "com.github.bumptech.glide:compiler:$rootProject.glideVersion"
+
+    // Sentry
+    implementation "io.sentry:sentry-android:$rootProject.sentryVersion"
 
 }

@@ -1,5 +1,4 @@
 <resources>
-    <string name="app_name">KotlinBase</string>
     <string name="no_internet">No Internet</string>
     <string name="an_error_occurred">An Error Occurred</string>
     <string name="login">Login</string>
