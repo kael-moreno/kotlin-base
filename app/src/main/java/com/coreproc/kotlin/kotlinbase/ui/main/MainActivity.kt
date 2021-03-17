@@ -18,15 +18,11 @@ class MainActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
 
         viewModel = initViewModel(MainViewModel::class.java)
-        viewModel!!.success.observe(this, Observer { this.onSuccess(it) })
+        viewModel!!.success.observe(this, Observer {  })
 
     }
 
     override fun initialize() {
-    }
-
-    fun onSuccess(str: String) {
-
     }
 
     override fun onDestroy() {

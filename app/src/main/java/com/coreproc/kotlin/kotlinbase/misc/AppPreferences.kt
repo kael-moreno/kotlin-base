@@ -6,7 +6,7 @@ import com.coreproc.kotlin.kotlinbase.App
 object AppPreferences {
     private val API_KEY = "API_KEY"
 
-    fun logout(context: Context) {
+    private fun logout() {
         val prefs = App.instance!!.getSharedPreferences(App.instance!!.packageName, Context.MODE_PRIVATE)
         prefs.edit().putString(API_KEY, "").apply()
     }

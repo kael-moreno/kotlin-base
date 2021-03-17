@@ -85,7 +85,7 @@ class DeviceUtilities(val context: Context) {
         return Build.MANUFACTURER
     }
 
-    fun getSecurityPatch(): Date {
+    fun getSecurityPatch(): Date? {
         return SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).parse(Build.VERSION.SECURITY_PATCH)
     }
 

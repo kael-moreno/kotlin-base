@@ -24,7 +24,7 @@ class GsonUTCDateAdapter : JsonSerializer<Date>, JsonDeserializer<Date> {
     @Synchronized
     override fun deserialize(jsonElement: JsonElement, type: Type, jsonDeserializationContext: JsonDeserializationContext): Date {
         try {
-            return dateFormat.parse(jsonElement.asString)
+            return dateFormat.parse(jsonElement.asString)!!
         } catch (e: ParseException) {
             throw JsonParseException(e)
         }
