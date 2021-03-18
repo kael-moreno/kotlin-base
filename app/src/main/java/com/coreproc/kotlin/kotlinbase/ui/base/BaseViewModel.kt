@@ -16,7 +16,7 @@ abstract class BaseViewModel : ViewModel() {
 
     val loading = SingleLiveEvent<Boolean>()
     val error = SingleLiveEvent<ErrorBody>()
-    val unauthorized = SingleLiveEvent<Boolean>()
+    private val unauthorized = SingleLiveEvent<Boolean>()
     val noInternetConnection = SingleLiveEvent<Throwable>()
 
     fun observeCommonEvent(baseActivity: BaseActivity) {
