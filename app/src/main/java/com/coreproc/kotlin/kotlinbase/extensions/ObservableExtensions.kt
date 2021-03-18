@@ -8,31 +8,44 @@ import io.reactivex.Single
 import io.reactivex.disposables.Disposable
 
 // IO to MAIN
-object ObservableExtensions {
-    fun <T> threadManageIoToUi(observable: Observable<T>): Observable<T> =
-        observable.subscribeOn(SchedulersFacade.io())
-            .observeOn(SchedulersFacade.ui())
+fun <T> Observable<T>.threadManageIoToUi(): Observable<T> =
+    this.subscribeOn(SchedulersFacade.io())
+        .observeOn(SchedulersFacade.ui())
+
+fun <T> Flowable<T>.threadManageIoToUi(): Flowable<T> =
+    this.subscribeOn(SchedulersFacade.io())
+        .observeOn(SchedulersFacade.ui())
+
+fun <T> Single<T>.threadManageIoToUi(): Single<T> =
+    this.subscribeOn(SchedulersFacade.io())
+        .observeOn(SchedulersFacade.ui())
 
 
-    // COMPUTATION to MAIN
-    fun <T> threadManageComputationToUi(observable: Observable<T>): Observable<T> =
-        observable.subscribeOn(SchedulersFacade.computation())
-            .observeOn(SchedulersFacade.ui())
+// COMPUTATION to MAIN
+fun <T> Observable<T>.threadManageComputationToUi(): Observable<T> =
+    this.subscribeOn(SchedulersFacade.computation())
+        .observeOn(SchedulersFacade.ui())
+
+fun <T> Flowable<T>.threadManageComputationToUi(): Flowable<T> =
+    this.subscribeOn(SchedulersFacade.computation())
+        .observeOn(SchedulersFacade.ui())
+
+fun <T> Single<T>.threadManageComputationToUi(): Single<T> =
+    this.subscribeOn(SchedulersFacade.computation())
+        .observeOn(SchedulersFacade.ui())
 
 
-    // Observable
-    fun <T> addDefaultDoOn(observable: Observable<T>, baseViewModel: BaseViewModel):
-            Observable<T> =
-        observable.doOnComplete { baseViewModel.loading.postValue(false) }
-            .doOnSubscribe { baseViewModel.loading.postValue(true) }
+// Observable
+fun <T> Observable<T>.addDefaultDoOn(baseViewModel: BaseViewModel): Observable<T> =
+    this.doOnComplete { baseViewModel.loading.postValue(false) }
+        .doOnSubscribe { baseViewModel.loading.postValue(true) }
 
-    fun <T : Any> defaultSubscribeBy(observable: Observable<T>,
-        baseViewModel: BaseViewModel,
-        onNext: (T) -> Unit
-    ): Disposable =
-        observable.subscribe(onNext,
-            {
-                ResponseExtensions.postError(it, baseViewModel)
-            },
-            {})
-}
+fun <T : Any> Observable<T>.defaultSubscribeBy(
+    baseViewModel: BaseViewModel,
+    onNext: (T) -> Unit
+): Disposable =
+    subscribe(onNext,
+        {
+            it.postError(baseViewModel)
+        },
+        {})

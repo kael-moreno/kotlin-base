@@ -12,13 +12,12 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.viewbinding.ViewBinding
-import com.coreproc.kotlin.kotlinbase.App
 import com.coreproc.kotlin.kotlinbase.R
 import com.coreproc.kotlin.kotlinbase.data.remote.ErrorBody
 import com.coreproc.kotlin.kotlinbase.databinding.ActivityBaseLayoutBinding
 import com.coreproc.kotlin.kotlinbase.databinding.DefaultToolbarBinding
-import com.coreproc.kotlin.kotlinbase.extensions.UIExtension
+import com.coreproc.kotlin.kotlinbase.extensions.setVisible
+import com.coreproc.kotlin.kotlinbase.extensions.showShortToast
 import com.coreproc.kotlin.kotlinbase.utils.DeviceUtilities
 import dagger.android.support.DaggerAppCompatActivity
 import javax.inject.Inject
@@ -39,11 +38,11 @@ abstract class BaseActivity : DaggerAppCompatActivity() {
 
     protected abstract fun initialize()
 
-    protected var context: Context? = null
+    protected lateinit var context: Context
 
     private lateinit var viewStubView: View
 
-    protected var defaultToolbar: Toolbar? = null
+    private var defaultToolbar: Toolbar? = null
 
     private var viewModels = mutableListOf<BaseViewModel>()
 
@@ -59,6 +58,7 @@ abstract class BaseActivity : DaggerAppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        context = this
         baseActivityBinding = ActivityBaseLayoutBinding.inflate(layoutInflater)
         defaultToolbarBinding = baseActivityBinding.toolbarLayout
         setContentView(baseActivityBinding.root)
@@ -79,7 +79,6 @@ abstract class BaseActivity : DaggerAppCompatActivity() {
 
     @SuppressLint("ClickableViewAccessibility")
     fun initUi() {
-        context = this
         defaultToolbar = defaultToolbarBinding.defaultToolbar
         setSupportActionBar(defaultToolbar)
         defaultToolbarBinding.toolbarTitleTextView.text = supportActionBar?.title
@@ -109,7 +108,7 @@ abstract class BaseActivity : DaggerAppCompatActivity() {
     }
 
 
-    protected fun hideToolbar() {
+    fun hideToolbar() {
         if (defaultToolbar != null)
             defaultToolbarBinding.parentToolbarRelativeLayout.visibility = View.GONE
     }
@@ -170,7 +169,7 @@ abstract class BaseActivity : DaggerAppCompatActivity() {
         recyclerView.adapter = adapter
     }
 
-    fun showDefaultErrorDialog(message: String) {
+    open fun showDefaultErrorDialog(message: String) {
         AlertDialog.Builder(context)
             .setTitle(getString(R.string.error))
             .setMessage(message)
@@ -179,7 +178,7 @@ abstract class BaseActivity : DaggerAppCompatActivity() {
             .create().show()
     }
 
-    fun buildDefaultDialog(
+    open fun buildDefaultDialog(
         title: String?, message: String?,
         okButton: String,
         onClickListener: DialogInterface.OnClickListener?
@@ -200,11 +199,11 @@ abstract class BaseActivity : DaggerAppCompatActivity() {
 
     open fun noInternetConnection(throwable: Throwable) {
         throwable.printStackTrace()
-        UIExtension.showShortToast(context!!, getString(R.string.an_error_occurred))
+        showShortToast(getString(R.string.an_error_occurred))
     }
 
     open fun loading(it: Boolean) {
-        UIExtension.setViewVisible(baseActivityBinding.loadingDialogRelativeLayout, it)
+        baseActivityBinding.loadingDialogRelativeLayout.setVisible(it)
     }
 
     open fun error(it: ErrorBody) {
