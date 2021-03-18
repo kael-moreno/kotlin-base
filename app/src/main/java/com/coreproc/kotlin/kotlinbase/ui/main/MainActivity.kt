@@ -18,6 +18,7 @@ class MainActivity : BaseActivity() {
         viewModel!!.success.observe(this, { /* onSuccess(it) */ })
 
         activityMainBinding = ActivityMainBinding.bind(getChildActivityView())
+
     }
 
     override fun onDestroy() {

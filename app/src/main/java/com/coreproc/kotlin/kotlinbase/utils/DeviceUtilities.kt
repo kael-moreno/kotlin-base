@@ -10,12 +10,15 @@ import android.telephony.TelephonyManager
 import com.coreproc.kotlin.kotlinbase.App
 import java.text.SimpleDateFormat
 import java.util.*
+import javax.inject.Inject
 
-class DeviceUtilities(val context: Context) {
+
+class DeviceUtilities
+    @Inject constructor() {
 
     private var imei: String? = null
     private var telephonyManager: TelephonyManager =
-        (context.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager)
+        (App.instance!!.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager)
 
     /**
      * Only use this if needed
@@ -56,11 +59,11 @@ class DeviceUtilities(val context: Context) {
 
     @SuppressLint("HardwareIds")
     fun getUuid(): String {
-        return Settings.Secure.getString(context.contentResolver, Settings.Secure.ANDROID_ID)
+        return Settings.Secure.getString(App.instance!!.contentResolver, Settings.Secure.ANDROID_ID)
     }
 
     fun getBatteryLevel(): Int {
-        return (context.getSystemService(Context.BATTERY_SERVICE) as BatteryManager).getIntProperty(BatteryManager.BATTERY_PROPERTY_CAPACITY)
+        return (App.instance!!.getSystemService(Context.BATTERY_SERVICE) as BatteryManager).getIntProperty(BatteryManager.BATTERY_PROPERTY_CAPACITY)
     }
 
     @SuppressLint("MissingPermission", "NewApi")

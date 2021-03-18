@@ -28,6 +28,9 @@ abstract class BaseActivity : DaggerAppCompatActivity() {
     @Inject
     lateinit var viewModelFactory: AppViewModelFactory
 
+    @Inject
+    lateinit var deviceUtilities: DeviceUtilities
+
     private lateinit var baseActivityBinding: ActivityBaseLayoutBinding
 
     private lateinit var defaultToolbarBinding: DefaultToolbarBinding
@@ -38,7 +41,7 @@ abstract class BaseActivity : DaggerAppCompatActivity() {
 
     protected var context: Context? = null
 
-    protected lateinit var viewStubView: View
+    private lateinit var viewStubView: View
 
     protected var defaultToolbar: Toolbar? = null
 
@@ -192,7 +195,7 @@ abstract class BaseActivity : DaggerAppCompatActivity() {
     }
 
     fun getDeviceUtil() : DeviceUtilities {
-        return App.getDeviceInfo()!!
+        return deviceUtilities
     }
 
     open fun noInternetConnection(throwable: Throwable) {
