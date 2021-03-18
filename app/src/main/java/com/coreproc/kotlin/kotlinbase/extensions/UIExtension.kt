@@ -1,18 +1,19 @@
-package com.coreproc.kaching.familyplan.extensions
+package com.coreproc.kotlin.kotlinbase.extensions
 
 import android.content.Context
 import android.view.View
 import android.widget.Toast
 
+object UIExtension {
+    fun showShortToast(context: Context, message: String) {
+        Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+    }
 
-fun Context.showShortToast(message: String) {
-    Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
-}
+    fun showLongToast(context: Context, message: String) {
+        Toast.makeText(context, message, Toast.LENGTH_LONG).show()
+    }
 
-fun Context.showLongToast(message: String) {
-    Toast.makeText(this, message, Toast.LENGTH_LONG).show()
-}
-
-fun View.setVisible(visible: Boolean) {
-    this.visibility = if (visible) View.VISIBLE else View.GONE
+    fun setViewVisible(view: View, visible: Boolean) {
+        view.visibility = if (visible) View.VISIBLE else View.GONE
+    }
 }

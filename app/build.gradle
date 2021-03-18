@@ -1,7 +1,6 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
-apply plugin: 'kotlin-android-extensions'
 
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
@@ -15,6 +14,10 @@ android {
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         buildConfigField 'String', 'SENTRY_DSN', SENTRY_DSN
         flavorDimensions "default"
+    }
+
+    buildFeatures {
+        viewBinding true
     }
 
     signingConfigs {
@@ -75,10 +78,6 @@ android {
             buildConfigField 'String', 'HOST', BASE_URL_PROD
         }
     }
-}
-
-androidExtensions {
-    experimental = true
 }
 
 dependencies {

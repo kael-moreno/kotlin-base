@@ -11,36 +11,38 @@ import java.net.UnknownHostException
 import java.nio.channels.NotYetConnectedException
 import javax.net.ssl.SSLHandshakeException
 
-fun <T : Any> Response<T>.postErrorBody(baseViewModel: BaseViewModel) {
-    baseViewModel.loading.postValue(false)
-    if (!this.isSuccessful) {
-        baseViewModel.error.postValue(ApiError.parseError(this))
-        return
-    }
-    baseViewModel.error.postValue(null)
-}
-
-fun Throwable.postError(baseViewModel: BaseViewModel) {
-    baseViewModel.loading.postValue(false)
-    if (this is NotYetConnectedException || this is UnknownHostException || this is SocketTimeoutException
-        || this is ConnectionShutdownException || this is IOException
-        || this is SSLHandshakeException
-    ) {
-        baseViewModel.noInternetConnection.postValue(this)
-        return
+object ResponseExtensions {
+    fun <T : Any> postErrorBody(response: Response<T>, baseViewModel: BaseViewModel) {
+        baseViewModel.loading.postValue(false)
+        if (!response.isSuccessful) {
+            baseViewModel.error.postValue(ApiError.parseError(response))
+            return
+        }
+        baseViewModel.error.postValue(null)
     }
 
-    val errorBody = ErrorBody(500, "ERROR", this.message!!, null)
-    baseViewModel.error.postValue(errorBody)
-}
+    fun postError(throwable: Throwable, baseViewModel: BaseViewModel) {
+        baseViewModel.loading.postValue(false)
+        if (throwable is NotYetConnectedException || throwable is UnknownHostException
+            || throwable is SocketTimeoutException || throwable is ConnectionShutdownException
+            || throwable is IOException || throwable is SSLHandshakeException
+        ) {
+            baseViewModel.noInternetConnection.postValue(throwable)
+            return
+        }
 
-fun <T : Any> Response<T>.postErrorBody(message: String, baseViewModel: BaseViewModel) {
-    baseViewModel.loading.postValue(false)
-    if (this.isSuccessful) {
-        baseViewModel.error.postValue(ErrorBody(500, "Error", message, null))
-        return
+        val errorBody = ErrorBody(500, "ERROR", throwable.message!!, null)
+        baseViewModel.error.postValue(errorBody)
     }
 
-    val errorBody = ErrorBody(500, "ERROR", "An error occurred", null)
-    baseViewModel.error.postValue(errorBody)
+    fun <T : Any> postErrorBody(response: Response<T>, message: String, baseViewModel: BaseViewModel) {
+        baseViewModel.loading.postValue(false)
+        if (response.isSuccessful) {
+            baseViewModel.error.postValue(ErrorBody(500, "Error", message, null))
+            return
+        }
+
+        val errorBody = ErrorBody(500, "ERROR", "An error occurred", null)
+        baseViewModel.error.postValue(errorBody)
+    }
 }

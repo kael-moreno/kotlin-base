@@ -1,5 +1,6 @@
 package com.coreproc.kotlin.kotlinbase.ui.base
 
+import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.Context
 import android.content.DialogInterface
@@ -11,15 +12,15 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.coreproc.kaching.familyplan.extensions.setVisible
-import com.coreproc.kaching.familyplan.extensions.showShortToast
+import androidx.viewbinding.ViewBinding
 import com.coreproc.kotlin.kotlinbase.App
 import com.coreproc.kotlin.kotlinbase.R
 import com.coreproc.kotlin.kotlinbase.data.remote.ErrorBody
+import com.coreproc.kotlin.kotlinbase.databinding.ActivityBaseLayoutBinding
+import com.coreproc.kotlin.kotlinbase.databinding.DefaultToolbarBinding
+import com.coreproc.kotlin.kotlinbase.extensions.UIExtension
 import com.coreproc.kotlin.kotlinbase.utils.DeviceUtilities
 import dagger.android.support.DaggerAppCompatActivity
-import kotlinx.android.synthetic.main.activity_base_layout.*
-import kotlinx.android.synthetic.main.default_toolbar.*
 import javax.inject.Inject
 
 abstract class BaseActivity : DaggerAppCompatActivity() {
@@ -27,33 +28,37 @@ abstract class BaseActivity : DaggerAppCompatActivity() {
     @Inject
     lateinit var viewModelFactory: AppViewModelFactory
 
+    private lateinit var baseActivityBinding: ActivityBaseLayoutBinding
+
+    private lateinit var defaultToolbarBinding: DefaultToolbarBinding
+
     protected abstract fun getLayoutResource(): Int
 
     protected abstract fun initialize()
 
     protected var context: Context? = null
 
-    protected var view: View? = null
+    protected lateinit var viewStubView: View
 
     protected var defaultToolbar: Toolbar? = null
 
     private var viewModels = mutableListOf<BaseViewModel>()
 
     override fun setTitle(titleId: Int) {
-
-        toolbar_title_text_view.setText(titleId)
+        defaultToolbarBinding.toolbarTitleTextView.setText(titleId)
         supportActionBar!!.title = ""
     }
 
     override fun setTitle(title: CharSequence) {
-        toolbar_title_text_view.text = title
+        defaultToolbarBinding.toolbarTitleTextView.text = title
         supportActionBar!!.title = ""
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_base_layout)
-
+        baseActivityBinding = ActivityBaseLayoutBinding.inflate(layoutInflater)
+        defaultToolbarBinding = baseActivityBinding.toolbarLayout
+        setContentView(baseActivityBinding.root)
         initUi()
     }
 
@@ -69,22 +74,28 @@ abstract class BaseActivity : DaggerAppCompatActivity() {
         return true
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     fun initUi() {
-
         context = this
-        defaultToolbar = default_toolbar
-        setSupportActionBar(default_toolbar)
-        toolbar_title_text_view.text = supportActionBar?.title
-
-        base_view_stub.layoutResource = getLayoutResource()
-        view = base_view_stub.inflate()
-
+        defaultToolbar = defaultToolbarBinding.defaultToolbar
+        setSupportActionBar(defaultToolbar)
+        defaultToolbarBinding.toolbarTitleTextView.text = supportActionBar?.title
         setTitle(title)
-        loading_dialog_relative_layout.setOnTouchListener { _, _ -> true }
+        baseActivityBinding.loadingDialogRelativeLayout.setOnTouchListener { _, _ -> true }
 
+        initViewStub()
         initialize()
     }
 
+    private fun initViewStub() {
+        baseActivityBinding.baseViewStub.layoutResource = getLayoutResource()
+        baseActivityBinding.baseViewStub.setOnInflateListener { _, inflated ->
+            viewStubView = inflated
+        }
+        baseActivityBinding.baseViewStub.inflate()
+    }
+
+    protected fun getChildActivityView(): View = viewStubView
 
     fun <T: BaseViewModel> initViewModel(viewModelClass: Class<T>): T {
         val viewModel = ViewModelProviders.of(this, viewModelFactory)
@@ -96,8 +107,8 @@ abstract class BaseActivity : DaggerAppCompatActivity() {
 
 
     protected fun hideToolbar() {
-        if (parent_toolbar_relative_layout != null && default_toolbar != null)
-            parent_toolbar_relative_layout.visibility = View.GONE
+        if (defaultToolbar != null)
+            defaultToolbarBinding.parentToolbarRelativeLayout.visibility = View.GONE
     }
 
     fun setToolbar(toolbar: Toolbar) {
@@ -108,17 +119,17 @@ abstract class BaseActivity : DaggerAppCompatActivity() {
     }
 
     fun setCustomToolbarMenuItem(resourceId: Int, onClickListener: View.OnClickListener) {
-        right_image_view.setImageResource(resourceId)
-        right_image_view.setOnClickListener(onClickListener)
-        right_image_view.visibility = View.VISIBLE
+        defaultToolbarBinding.rightImageView.setImageResource(resourceId)
+        defaultToolbarBinding.rightImageView.setOnClickListener(onClickListener)
+        defaultToolbarBinding.rightImageView.visibility = View.VISIBLE
     }
 
     fun setCustomToolbarMenuItemVisibility(visibility: Int) {
-        right_image_view.visibility = visibility
+        defaultToolbarBinding.rightImageView.visibility = visibility
     }
 
     fun getCustomToolbarMenuItem(): AppCompatImageView {
-        return right_image_view
+        return defaultToolbarBinding.rightImageView
     }
 
     fun showDefaultDialog(title: String, message: String) {
@@ -172,8 +183,8 @@ abstract class BaseActivity : DaggerAppCompatActivity() {
     ): AlertDialog.Builder {
         val builder = AlertDialog.Builder(context)
 
-        if (title != null && !title.isEmpty()) builder.setTitle(title)
-        if (message != null && !message.isEmpty()) builder.setMessage(message)
+        if (title != null && title.isNotEmpty()) builder.setTitle(title)
+        if (message != null && message.isNotEmpty()) builder.setMessage(message)
 
         builder.setCancelable(false)
         builder.setPositiveButton(okButton, onClickListener)
@@ -186,18 +197,18 @@ abstract class BaseActivity : DaggerAppCompatActivity() {
 
     open fun noInternetConnection(throwable: Throwable) {
         throwable.printStackTrace()
-        showShortToast(getString(R.string.no_internet_connection))
+        UIExtension.showShortToast(context!!, getString(R.string.an_error_occurred))
     }
 
     open fun loading(it: Boolean) {
-        loading_dialog_relative_layout.setVisible(it)
+        UIExtension.setViewVisible(baseActivityBinding.loadingDialogRelativeLayout, it)
     }
 
     open fun error(it: ErrorBody) {
         showDefaultErrorDialog(it.getFullMessage())
     }
 
-    open fun unathorized(boolean: Boolean) {
+    open fun unauthorized(boolean: Boolean) {
         buildDefaultDialog(null, getString(R.string.session_expired), getString(R.string.ok),
             DialogInterface.OnClickListener { _, _ ->
 

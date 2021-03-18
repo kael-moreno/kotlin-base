@@ -5,6 +5,9 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
 import com.coreproc.kotlin.kotlinbase.data.remote.ErrorBody
+import com.coreproc.kotlin.kotlinbase.data.remote.UseCase
+import com.coreproc.kotlin.kotlinbase.extensions.ObservableExtensions
+import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 
 abstract class BaseViewModel : ViewModel() {
@@ -17,10 +20,10 @@ abstract class BaseViewModel : ViewModel() {
     val noInternetConnection = SingleLiveEvent<Throwable>()
 
     fun observeCommonEvent(baseActivity: BaseActivity) {
-        loading.observe(baseActivity, Observer { baseActivity.loading(it) })
-        error.observe(baseActivity, Observer { baseActivity.error(it) })
-        unauthorized.observe(baseActivity, Observer { baseActivity.unathorized(it) })
-        noInternetConnection.observe(baseActivity, Observer { baseActivity.noInternetConnection(it) })
+        loading.observe(baseActivity, { baseActivity.loading(it) })
+        error.observe(baseActivity, { baseActivity.error(it) })
+        unauthorized.observe(baseActivity, { baseActivity.unauthorized(it) })
+        noInternetConnection.observe(baseActivity, { baseActivity.noInternetConnection(it) })
     }
 
     override fun onCleared() {
@@ -39,6 +42,12 @@ abstract class BaseViewModel : ViewModel() {
         error.removeObservers(owner)
         unauthorized.removeObservers(owner)
         noInternetConnection.removeObservers(owner)
+    }
+
+    fun <T> defaultObservable(observable: Observable<T>): Observable<T>  {
+        var defaultObs = ObservableExtensions.threadManageIoToUi(observable)
+        defaultObs = ObservableExtensions.addDefaultDoOn(defaultObs, this)
+        return defaultObs
     }
 
 }
