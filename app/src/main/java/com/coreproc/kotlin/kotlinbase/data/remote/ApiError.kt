@@ -1,8 +1,8 @@
 package com.coreproc.kotlin.kotlinbase.data.remote
 
-import android.util.Log
 import com.google.gson.Gson
 import retrofit2.Response
+import timber.log.Timber
 
 object ApiError {
 
@@ -13,7 +13,7 @@ object ApiError {
 
         return try {
             val responseString = response.errorBody()!!.string()
-            Log.e(TAG, responseString)
+            Timber.e(responseString)
 
             Gson().fromJson(responseString, ErrorBody::class.java)
         } catch (e: Exception) {

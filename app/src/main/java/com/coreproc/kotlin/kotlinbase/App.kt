@@ -4,6 +4,7 @@ import com.coreproc.kotlin.kotlinbase.di.DaggerAppComponent
 import dagger.android.AndroidInjector
 import dagger.android.support.DaggerApplication
 import io.sentry.android.core.SentryAndroid
+import timber.log.Timber
 
 class App : DaggerApplication() {
 
@@ -19,8 +20,15 @@ class App : DaggerApplication() {
         super.onCreate()
 
         instance = this
+        initTimber()
         initSentry()
     }
+
+    private fun initTimber() {
+        if (BuildConfig.DEBUG)
+            Timber.plant(Timber.DebugTree())
+    }
+
 
     private fun initSentry() {
         if (BuildConfig.SENTRY_DSN.isNotEmpty()) {
