@@ -60,9 +60,8 @@ class NetworkClientModule {
                         )
                     )
 
-
                 AppPreferences.getApiKey()?.let { key ->
-                    builder.addHeader("X-Authorization", key)
+                    builder.addHeader("Authorization", "Bearer $key")
                 }
 
                 it.proceed(builder.build())
