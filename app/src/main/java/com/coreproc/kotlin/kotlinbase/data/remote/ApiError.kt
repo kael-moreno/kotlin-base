@@ -9,13 +9,15 @@ object ApiError {
     private const val TAG = "APIERROR"
 
     fun <T> parseError(response: Response<T>): ErrorBody {
-        val errorBody = ErrorBody(500, "Error", "An error occurred", null)
+        var errorBody = ErrorBody(500, "Error", "An error occurred", null)
 
         return try {
             val responseString = response.errorBody()!!.string()
             Timber.e(responseString)
 
-            Gson().fromJson(responseString, ErrorBody::class.java)
+            errorBody = Gson().fromJson(responseString, ErrorBody::class.java)
+            errorBody.http_code = response.code()
+            return errorBody
         } catch (e: Exception) {
             e.printStackTrace()
             errorBody

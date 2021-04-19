@@ -213,8 +213,9 @@ abstract class BaseActivity : DaggerAppCompatActivity() {
     open fun unauthorized(boolean: Boolean) {
         buildDefaultDialog(null, getString(R.string.session_expired), getString(R.string.ok),
             DialogInterface.OnClickListener { _, _ ->
-
+                showShortToast("Perform your logout at BaseActivity@unauthorized.")
             })
+            .create().show()
     }
 
 }
