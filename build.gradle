@@ -1,8 +1,8 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 
 buildscript {
-    ext.kotlin_version = '1.4.31'
-    ext.gradle_version = '4.1.2'
+    ext.kotlin_version = '1.7.20'
+    ext.gradle_version = '7.3.1'
     repositories {
         google()
         maven {url "https://plugins.gradle.org/m2/" }
@@ -33,20 +33,20 @@ rootProject.ext {
     versionMajor = 0    // backward compatibility
     versionMinor = 0    // new feature or a major behavior change
     versionPatch = 1    // fixes or minor patch
-    code = new Date().format('yyMMddHHmm').toInteger()
+    code = 1
     
     // Sdk and tools
-    minSdkVersion = 25
-    targetSdkVersion = 30
-    compileSdkVersion = 30
+    minSdkVersion = 27
+    targetSdkVersion = 33
+    compileSdkVersion = 33
 
     crashlyticsVersion = '2.9.5'
     multidexVersion = '1.0.3'
 
     // App dependencies
-    supportLibraryVersion = '1.3.0-beta01'
+    supportLibraryVersion = '1.7.0-alpha01'
     lifecycleVersion = '1.1.1'
-    constraintVersion = '2.1.0-beta01'
+    constraintVersion = '2.2.0-alpha04'
     playServicesVersion = '16.0.0'
 
     rxjavaVersion = '2.2.9'
@@ -55,13 +55,13 @@ rootProject.ext {
 
     apacheVersion = '3.7'
 
-    retrofitVersion = '2.8.0'
-    gsonVersion = '2.8.6'
-    okhttpVersion = '3.12.3'
+    retrofitVersion = '2.9.0'
+    gsonVersion = '2.8.9'
+    okhttpVersion = '4.3.1'
 
-    daggerVersion = '2.27'
+    daggerVersion = '2.44.2'
 
-    glideVersion = '4.11.0'
+    glideVersion = '4.12.0'
 
     // Testing
     junitVersion = '4.12'
@@ -70,5 +70,5 @@ rootProject.ext {
     hamcrestVersion = '1.3'
 
     // Sentry
-    sentryVersion = '4.3.0'
+    sentryVersion = '5.3.0'
 }
