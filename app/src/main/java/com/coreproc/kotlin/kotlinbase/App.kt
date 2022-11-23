@@ -1,19 +1,15 @@
 package com.coreproc.kotlin.kotlinbase
 
-import com.coreproc.kotlin.kotlinbase.di.DaggerAppComponent
-import dagger.android.AndroidInjector
-import dagger.android.support.DaggerApplication
+import android.app.Application
+import dagger.hilt.android.HiltAndroidApp
 import io.sentry.android.core.SentryAndroid
 import timber.log.Timber
 
-class App : DaggerApplication() {
+@HiltAndroidApp
+class App : Application(){
 
     companion object {
         var instance: App? = null
-    }
-
-    override fun applicationInjector(): AndroidInjector<out DaggerApplication> {
-        return DaggerAppComponent.builder().application(this).build()
     }
 
     override fun onCreate() {
