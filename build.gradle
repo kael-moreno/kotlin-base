@@ -18,6 +18,7 @@ buildscript {
 
 allprojects {
     repositories {
+        maven { url 'https://maven.google.com' }
         google()
         maven { url 'https://plugins.gradle.org/m2/' }
     }
@@ -45,13 +46,9 @@ rootProject.ext {
 
     // App dependencies
     supportLibraryVersion = '1.7.0-alpha01'
-    lifecycleVersion = '1.1.1'
+    lifecycleVersion = '2.5.1'
     constraintVersion = '2.2.0-alpha04'
     playServicesVersion = '16.0.0'
-
-    rxjavaVersion = '2.2.9'
-    rxandroidVersion = '2.1.1'
-    rx_kotlin_version = '2.2.0'
 
     apacheVersion = '3.7'
 
@@ -71,4 +68,13 @@ rootProject.ext {
 
     // Sentry
     sentryVersion = '5.3.0'
+
+    // Coroutines
+    coroutinesVersion = '1.6.1'
+
+    // Lifecycle
+    lifecycleVersion = '2.5.1'
+
+    // Timber
+    timberVersion = '5.0.1'
 }

@@ -89,15 +89,13 @@ dependencies {
     implementation "androidx.appcompat:appcompat:$rootProject.supportLibraryVersion"
 
     // Lifecycle
-    implementation "android.arch.lifecycle:runtime:$project.lifecycleVersion"
-    implementation "android.arch.lifecycle:extensions:$project.lifecycleVersion"
-    implementation 'android.arch.paging:runtime:1.0.1'
-    kapt "android.arch.lifecycle:common-java8:$project.lifecycleVersion"
+    implementation "androidx.lifecycle:lifecycle-common:$rootProject.lifecycleVersion"
+    implementation "androidx.lifecycle:lifecycle-runtime-ktx:$rootProject.lifecycleVersion"
+    implementation "androidx.lifecycle:lifecycle-livedata-ktx:$rootProject.lifecycleVersion"
 
-    // RxJava
-    implementation "io.reactivex.rxjava2:rxjava:$rootProject.rxjavaVersion"
-    implementation "io.reactivex.rxjava2:rxandroid:$rootProject.rxandroidVersion"
-    implementation "io.reactivex.rxjava2:rxkotlin:$rootProject.rx_kotlin_version"
+    implementation "android.arch.lifecycle:extensions:1.1.1"
+    implementation 'android.arch.paging:runtime:1.0.1'
+    kapt "android.arch.lifecycle:common-java8:1.1.1"
 
     // Dagger dependencies
     implementation "com.google.dagger:dagger:$rootProject.daggerVersion"
@@ -123,5 +121,11 @@ dependencies {
 
     // Sentry
     implementation "io.sentry:sentry-android:$rootProject.sentryVersion"
+
+    // Coroutines
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$rootProject.coroutinesVersion"
+
+    // Timber
+    implementation "com.jakewharton.timber:timber:$rootProject.timberVersion"
 
 }

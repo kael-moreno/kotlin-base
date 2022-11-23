@@ -1,8 +1,7 @@
 package com.coreproc.kotlin.kotlinbase.data.remote
 
-import io.reactivex.Observable
+import com.coreproc.kotlin.kotlinbase.data.remote.model.SampleResponse
 
 interface DataSource {
-
-    fun getSomething(): Observable<String>
+    suspend fun getSomething(): Resource<SampleResponse>
 }

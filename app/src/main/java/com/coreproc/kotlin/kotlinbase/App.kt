@@ -4,6 +4,7 @@ import com.coreproc.kotlin.kotlinbase.di.DaggerAppComponent
 import dagger.android.AndroidInjector
 import dagger.android.support.DaggerApplication
 import io.sentry.android.core.SentryAndroid
+import timber.log.Timber
 
 class App : DaggerApplication() {
 
@@ -29,5 +30,8 @@ class App : DaggerApplication() {
                 it.environment = BuildConfig.FLAVOR
             }
         }
+
+        if (BuildConfig.DEBUG)
+            Timber.plant(Timber.DebugTree())
     }
 }

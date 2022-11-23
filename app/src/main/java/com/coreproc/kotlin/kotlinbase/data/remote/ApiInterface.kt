@@ -1,10 +1,11 @@
 package com.coreproc.kotlin.kotlinbase.data.remote
 
-import io.reactivex.Observable
+import com.coreproc.kotlin.kotlinbase.data.remote.model.SampleResponse
+import retrofit2.Response
 import retrofit2.http.GET
 
 interface ApiInterface {
 
-    @GET("url here")
-    fun getSomething(): Observable<String>
+    @GET("random_joke")
+    suspend fun getSomething(): Response<SampleResponse>
 }

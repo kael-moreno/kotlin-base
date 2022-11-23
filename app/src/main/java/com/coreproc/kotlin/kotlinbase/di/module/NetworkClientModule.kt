@@ -6,7 +6,6 @@ import android.provider.Settings
 import com.coreproc.kotlin.kotlinbase.App
 import com.coreproc.kotlin.kotlinbase.BuildConfig
 import com.coreproc.kotlin.kotlinbase.misc.AppPreferences
-import com.coreproc.kotlin.kotlinbase.misc.common.SchedulersFacade
 import com.coreproc.kotlin.kotlinbase.utils.GsonUTCDateAdapter
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
@@ -15,7 +14,6 @@ import dagger.Provides
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
-import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.*
 import java.util.concurrent.TimeUnit
@@ -100,7 +98,6 @@ class NetworkClientModule {
         return Retrofit.Builder()
             .baseUrl(BuildConfig.HOST)
             .addConverterFactory(gsonConverterFactory)
-            .addCallAdapterFactory(RxJava2CallAdapterFactory.createWithScheduler(SchedulersFacade.io()))
             .client(client)
             .build()
     }
