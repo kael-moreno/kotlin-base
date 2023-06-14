@@ -11,6 +11,8 @@ import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import dagger.Module
 import dagger.Provides
+import dagger.hilt.InstallIn
+import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -19,8 +21,9 @@ import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
 
+@InstallIn(SingletonComponent::class)
 @Module
-class NetworkClientModule {
+object NetworkClientModule {
 
     @Singleton
     @Provides

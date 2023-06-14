@@ -6,9 +6,10 @@ import android.content.Context
 import android.content.DialogInterface
 import android.os.Bundle
 import android.view.View
+import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.Toolbar
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -19,13 +20,11 @@ import com.coreproc.kotlin.kotlinbase.databinding.DefaultToolbarBinding
 import com.coreproc.kotlin.kotlinbase.extensions.setVisible
 import com.coreproc.kotlin.kotlinbase.extensions.showShortToast
 import com.coreproc.kotlin.kotlinbase.utils.DeviceUtilities
-import dagger.android.support.DaggerAppCompatActivity
+import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
-abstract class BaseActivity : DaggerAppCompatActivity() {
-
-    @Inject
-    lateinit var viewModelFactory: AppViewModelFactory
+@AndroidEntryPoint
+abstract class BaseActivity : AppCompatActivity() {
 
     @Inject
     lateinit var deviceUtilities: DeviceUtilities
@@ -44,7 +43,7 @@ abstract class BaseActivity : DaggerAppCompatActivity() {
 
     private var defaultToolbar: Toolbar? = null
 
-    private var viewModels = mutableListOf<BaseViewModel>()
+    private var listOfViewModels = mutableListOf<BaseViewModel>()
 
     override fun setTitle(titleId: Int) {
         defaultToolbarBinding.toolbarTitleTextView.setText(titleId)
@@ -66,7 +65,7 @@ abstract class BaseActivity : DaggerAppCompatActivity() {
     }
 
     override fun onDestroy() {
-        viewModels.forEach {
+        listOfViewModels.forEach {
             it.removeObservers(this)
         }
         super.onDestroy()
@@ -96,10 +95,9 @@ abstract class BaseActivity : DaggerAppCompatActivity() {
     protected fun getChildActivityView(): View = viewStubView
 
     fun <T: BaseViewModel> initViewModel(viewModelClass: Class<T>): T {
-        val viewModel = ViewModelProviders.of(this, viewModelFactory)
-            .get(viewModelClass)
+        val viewModel = ViewModelProvider(this)[viewModelClass]
         viewModel.observeCommonEvent(this)
-        viewModels.add(viewModel)
+        listOfViewModels.add(viewModel)
         return viewModel
     }
 

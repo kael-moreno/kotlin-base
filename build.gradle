@@ -16,6 +16,10 @@ buildscript {
     }
 }
 
+plugins{
+    id("com.google.dagger.hilt.android") version "2.44" apply false
+}
+
 allprojects {
     repositories {
         maven { url 'https://maven.google.com' }
@@ -48,6 +52,8 @@ rootProject.ext {
     supportLibraryVersion = '1.7.0-alpha02'
     constraintVersion = '2.2.0-alpha10'
     playServicesVersion = '16.0.0'
+    fragmentKtxVersion = "1.5.4"
+    activityKtxVersion = "1.6.1"
 
     apacheVersion = '3.7'
 
@@ -55,7 +61,7 @@ rootProject.ext {
     gsonVersion = '2.9.0'
     okhttpVersion = '4.10.0'
 
-    daggerVersion = '2.44.2'
+    hiltVersion = '2.44'
 
     glideVersion = '4.14.2'
 

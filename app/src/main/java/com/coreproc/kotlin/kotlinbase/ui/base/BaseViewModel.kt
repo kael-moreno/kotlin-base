@@ -5,7 +5,8 @@ import androidx.lifecycle.ViewModel
 import com.coreproc.kotlin.kotlinbase.data.remote.ErrorBody
 import io.reactivex.disposables.CompositeDisposable
 
-abstract class BaseViewModel : ViewModel() {
+
+abstract class BaseViewModel: ViewModel() {
 
     protected val compositeDisposable = CompositeDisposable()
 
