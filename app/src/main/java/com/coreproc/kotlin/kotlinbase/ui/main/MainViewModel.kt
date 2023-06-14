@@ -8,10 +8,12 @@ import com.coreproc.kotlin.kotlinbase.data.remote.Resource
 import com.coreproc.kotlin.kotlinbase.data.remote.model.SampleResponse
 import com.coreproc.kotlin.kotlinbase.data.remote.usecase.ApiUseCase
 import com.coreproc.kotlin.kotlinbase.ui.base.BaseViewModel
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import timber.log.Timber
 import javax.inject.Inject
 
+@HiltViewModel
 class MainViewModel
 @Inject
 constructor(private val apiUseCase: ApiUseCase) : BaseViewModel() {
@@ -19,6 +21,7 @@ constructor(private val apiUseCase: ApiUseCase) : BaseViewModel() {
     val success = MutableLiveData<SampleResponse>()
 
     fun getSomething(owner: LifecycleOwner) {
+        Timber.e("Called")
         loading.postValue(true)
         liveData(Dispatchers.IO) {
             // yield() = to cancel

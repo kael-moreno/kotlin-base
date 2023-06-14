@@ -2,6 +2,7 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-parcelize'
 apply plugin: 'kotlin-kapt'
+apply plugin: 'dagger.hilt.android.plugin'
 
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
@@ -20,6 +21,17 @@ android {
     buildFeatures {
         viewBinding true
     }
+
+    //Hilt
+    kapt {
+        correctErrorTypes = true
+    }
+
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
+    }
+    //
 
     signingConfigs {
         release {
@@ -87,6 +99,8 @@ dependencies {
     // App's dependencies
     implementation "androidx.constraintlayout:constraintlayout:$rootProject.constraintVersion"
     implementation "androidx.appcompat:appcompat:$rootProject.supportLibraryVersion"
+    implementation "androidx.fragment:fragment-ktx:$rootProject.fragmentKtxVersion"
+    implementation "androidx.activity:activity-ktx:$rootProject.activityKtxVersion"
 
     // Lifecycle
     implementation "androidx.lifecycle:lifecycle-common:$rootProject.lifecycleVersion"
@@ -97,12 +111,9 @@ dependencies {
     implementation 'android.arch.paging:runtime:1.0.1'
     kapt "android.arch.lifecycle:common-java8:1.1.1"
 
-    // Dagger dependencies
-    implementation "com.google.dagger:dagger:$rootProject.daggerVersion"
-    implementation "com.google.dagger:dagger-android:$rootProject.daggerVersion"
-    implementation "com.google.dagger:dagger-android-support:$rootProject.daggerVersion"
-    kapt "com.google.dagger:dagger-compiler:$rootProject.daggerVersion"
-    kapt "com.google.dagger:dagger-android-processor:$rootProject.daggerVersion"
+    // Hilt Dependencies
+    implementation "com.google.dagger:hilt-android:$rootProject.hiltVersion"
+    kapt "com.google.dagger:hilt-android-compiler:$rootProject.hiltVersion"
 
     // Apache Common
     implementation "org.apache.commons:commons-lang3:$rootProject.apacheVersion"

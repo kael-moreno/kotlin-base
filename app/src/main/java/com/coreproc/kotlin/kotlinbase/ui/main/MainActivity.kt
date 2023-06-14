@@ -4,7 +4,9 @@ import com.coreproc.kotlin.kotlinbase.R
 import com.coreproc.kotlin.kotlinbase.databinding.ActivityMainBinding
 import com.coreproc.kotlin.kotlinbase.extensions.showShortToast
 import com.coreproc.kotlin.kotlinbase.ui.base.BaseActivity
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : BaseActivity() {
 
     private lateinit var viewModel: MainViewModel
@@ -14,7 +16,6 @@ class MainActivity : BaseActivity() {
     override fun getLayoutResource(): Int = R.layout.activity_main
 
     override fun initialize() {
-
         viewModel = initViewModel(MainViewModel::class.java)
         viewModel.success.observe(this) {
             activityMainBinding.helloWorldTextView.text = it.setup
@@ -22,7 +23,6 @@ class MainActivity : BaseActivity() {
         viewModel.getSomething(this)
 
         activityMainBinding = ActivityMainBinding.bind(getChildActivityView())
-
     }
 
     override fun onDestroy() {
