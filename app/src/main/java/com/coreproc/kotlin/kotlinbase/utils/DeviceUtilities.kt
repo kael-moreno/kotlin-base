@@ -2,7 +2,6 @@ package com.coreproc.kotlin.kotlinbase.utils
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.net.wifi.WifiManager
 import android.os.BatteryManager
 import android.os.Build
 import android.provider.Settings
@@ -16,26 +15,8 @@ import javax.inject.Inject
 class DeviceUtilities
     @Inject constructor() {
 
-    private var imei: String? = null
     private var telephonyManager: TelephonyManager =
         (App.instance!!.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager)
-
-    /**
-     * Only use this if needed
-     *
-    class doAsync(val handler: () -> Unit) : AsyncTask<Void, Void, Void>() {
-    override fun doInBackground(vararg params: Void?): Void? {
-    handler()
-    return null
-    }
-    }
-
-    init {
-    doAsync {
-
-    //imei = AdvertisingIdClient.getAdvertisingIdInfo(context).id
-    }.execute()
-    }**/
 
     fun isEmulator(): Boolean {
         return Build.FINGERPRINT.startsWith("generic")
@@ -50,11 +31,7 @@ class DeviceUtilities
 
     @SuppressLint("MissingPermission")
     fun getSerialNumber(): String {
-        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            Build.getSerial()
-        } else {
-            Build.UNKNOWN
-        }
+        return Build.getSerial()
     }
 
     @SuppressLint("HardwareIds")
@@ -90,13 +67,6 @@ class DeviceUtilities
 
     fun getSecurityPatch(): Date? {
         return SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).parse(Build.VERSION.SECURITY_PATCH)
-    }
-
-    @SuppressLint("MissingPermission")
-    fun getMacAddress(): String {
-        val wifiManager = App.instance!!.getSystemService(Context.WIFI_SERVICE) as WifiManager
-        val wInfo = wifiManager.connectionInfo
-        return wInfo.macAddress
     }
 
     fun getDeviceTimestamp(): Long {

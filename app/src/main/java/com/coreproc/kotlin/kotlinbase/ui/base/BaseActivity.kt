@@ -72,10 +72,6 @@ abstract class BaseActivity : DaggerAppCompatActivity() {
         super.onDestroy()
     }
 
-    override fun onSupportNavigateUp(): Boolean {
-        onBackPressed()
-        return true
-    }
 
     @SuppressLint("ClickableViewAccessibility")
     fun initUi() {
@@ -211,10 +207,10 @@ abstract class BaseActivity : DaggerAppCompatActivity() {
     }
 
     open fun unauthorized(boolean: Boolean) {
-        buildDefaultDialog(null, getString(R.string.session_expired), getString(R.string.ok),
-            DialogInterface.OnClickListener { _, _ ->
+        buildDefaultDialog(null, getString(R.string.session_expired), getString(R.string.ok)
+        ) { _, _ ->
 
-            })
+        }
     }
 
 }
