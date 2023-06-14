@@ -1,5 +1,7 @@
 # Kotlin-Base
 
+## This might require Android Studio Giraffe/Hedgehog
+
 Please read and understand the readme guide before adding contribution to the development of the project.
 
 ## Etiquette

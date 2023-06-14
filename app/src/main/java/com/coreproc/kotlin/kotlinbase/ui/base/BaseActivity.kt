@@ -71,10 +71,6 @@ abstract class BaseActivity : AppCompatActivity() {
         super.onDestroy()
     }
 
-    override fun onSupportNavigateUp(): Boolean {
-        onBackPressed()
-        return true
-    }
 
     @SuppressLint("ClickableViewAccessibility")
     fun initUi() {
