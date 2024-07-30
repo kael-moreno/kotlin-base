@@ -49,17 +49,17 @@ rootProject.ext {
     multidexVersion = '1.0.3'
 
     // App dependencies
-    supportLibraryVersion = '1.7.0-alpha02'
-    constraintVersion = '2.2.0-alpha10'
+    supportLibraryVersion = '1.7.0'
+    constraintVersion = '2.2.0-alpha13'
     playServicesVersion = '16.0.0'
-    fragmentKtxVersion = "1.5.4"
-    activityKtxVersion = "1.6.1"
+    fragmentKtxVersion = "1.8.2"
+    activityKtxVersion = "1.9.1"
 
     apacheVersion = '3.7'
 
     retrofitVersion = '2.9.0'
-    gsonVersion = '2.9.0'
-    okhttpVersion = '4.10.0'
+    gsonVersion = '2.9.1'
+    okhttpVersion = '4.12.0'
 
     hiltAndroidVersion = '2.51.1'
     hiltCompilerVersion = '2.51.1'
