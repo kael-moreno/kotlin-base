@@ -16,8 +16,15 @@ class App : Application(){
         super.onCreate()
 
         instance = this
+        initTimber()
         initSentry()
     }
+
+    private fun initTimber() {
+        if (BuildConfig.DEBUG)
+            Timber.plant(Timber.DebugTree())
+    }
+
 
     private fun initSentry() {
         if (BuildConfig.SENTRY_DSN.isNotEmpty()) {

@@ -49,6 +49,9 @@ rootProject.ext {
     crashlyticsVersion = '2.9.5'
     multidexVersion = '1.0.3'
 
+    // Timber
+    timberVersion = '4.7.1'
+
     // App dependencies
     supportLibraryVersion = '1.7.0'
     constraintVersion = '2.2.0-alpha13'

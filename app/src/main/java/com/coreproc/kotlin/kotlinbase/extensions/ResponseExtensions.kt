@@ -27,11 +27,16 @@ fun Throwable.postError(baseViewModel: BaseViewModel) {
         || this is SSLHandshakeException
     ) {
         baseViewModel.noInternetConnection.postValue(this)
-        return
+    } else if (this is ErrorBody)
+        if (this.http_code == 401) {
+            baseViewModel.unauthorized.postValue(true)
+        } else {
+            baseViewModel.error.postValue(this)
+        }
+    else {
+        val errorBody = ErrorBody(500, "ERROR", this.message!!, null)
+        baseViewModel.error.postValue(errorBody)
     }
-
-    val errorBody = ErrorBody(500, "ERROR", this.message!!, null)
-    baseViewModel.error.postValue(errorBody)
 }
 
 fun <T : Any> Response<T>.postErrorBody(message: String, baseViewModel: BaseViewModel) {
