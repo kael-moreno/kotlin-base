@@ -1,7 +1,7 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-parcelize'
-apply plugin: 'kotlin-kapt'
+apply plugin: 'com.google.devtools.ksp'
 apply plugin: 'dagger.hilt.android.plugin'
 
 android {
@@ -22,16 +22,10 @@ android {
         viewBinding true
     }
 
-    //Hilt
-    kapt {
-        correctErrorTypes = true
-    }
-
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
-    //
 
     signingConfigs {
         release {
@@ -109,11 +103,11 @@ dependencies {
 
     implementation "android.arch.lifecycle:extensions:1.1.1"
     implementation 'android.arch.paging:runtime:1.0.1'
-    kapt "android.arch.lifecycle:common-java8:1.1.1"
+    ksp "android.arch.lifecycle:common-java8:1.1.1"
 
     // Hilt Dependencies
     implementation "com.google.dagger:hilt-android:$rootProject.hiltAndroidVersion"
-    kapt "com.google.dagger:hilt-android-compiler:$rootProject.hiltCompilerVersion"
+    ksp "com.google.dagger:hilt-android-compiler:$rootProject.hiltCompilerVersion"
 
     // Apache Common
     implementation "org.apache.commons:commons-lang3:$rootProject.apacheVersion"
@@ -128,7 +122,7 @@ dependencies {
 
     // Glide 4
     implementation "com.github.bumptech.glide:glide:$rootProject.glideVersion"
-    kapt "com.github.bumptech.glide:compiler:$rootProject.glideVersion"
+    ksp "com.github.bumptech.glide:compiler:$rootProject.glideVersion"
 
     // Sentry
     implementation "io.sentry:sentry-android:$rootProject.sentryVersion"
