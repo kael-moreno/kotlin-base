@@ -1,10 +1,11 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-parcelize'
-apply plugin: 'kotlin-kapt'
+apply plugin: 'com.google.devtools.ksp'
+apply plugin: 'dagger.hilt.android.plugin'
 
 android {
-    compileSdkVersion rootProject.ext.compileSdkVersion
+    compileSdk rootProject.ext.compileSdkVersion
 
     defaultConfig {
         applicationId "com.coreproc.kotlin.kotlinbase"
@@ -14,11 +15,16 @@ android {
         versionName "${versionMajor}.${versionMinor}.${versionPatch}+${code}"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         buildConfigField 'String', 'SENTRY_DSN', SENTRY_DSN
-        flavorDimensions "default"
+        flavorDimensions += "default"
     }
 
     buildFeatures {
         viewBinding true
+    }
+
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
 
     signingConfigs {
@@ -40,11 +46,6 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
-    }
-
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
     }
 
     productFlavors {
@@ -79,37 +80,34 @@ android {
             buildConfigField 'String', 'HOST', BASE_URL_PROD
         }
     }
+    namespace 'com.coreproc.kotlin.kotlinbase'
 }
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.8.10"
     testImplementation "org.jetbrains.kotlin:kotlin-test:$kotlin_version"
     testImplementation "org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version"
 
     // App's dependencies
     implementation "androidx.constraintlayout:constraintlayout:$rootProject.constraintVersion"
     implementation "androidx.appcompat:appcompat:$rootProject.supportLibraryVersion"
+    implementation "androidx.fragment:fragment-ktx:$rootProject.fragmentKtxVersion"
+    implementation "androidx.activity:activity-ktx:$rootProject.activityKtxVersion"
 
     // Lifecycle
-    implementation "android.arch.lifecycle:runtime:$project.lifecycleVersion"
-    implementation "android.arch.lifecycle:extensions:$project.lifecycleVersion"
+    implementation "androidx.lifecycle:lifecycle-common:$rootProject.lifecycleVersion"
+    implementation "androidx.lifecycle:lifecycle-runtime-ktx:$rootProject.lifecycleVersion"
+    implementation "androidx.lifecycle:lifecycle-livedata-ktx:$rootProject.lifecycleVersion"
+
+    implementation "android.arch.lifecycle:extensions:1.1.1"
     implementation 'android.arch.paging:runtime:1.0.1'
-    kapt "android.arch.lifecycle:common-java8:$project.lifecycleVersion"
+    ksp "android.arch.lifecycle:common-java8:1.1.1"
 
-    // RxJava
-    implementation "io.reactivex.rxjava2:rxjava:$rootProject.rxjavaVersion"
-    implementation "io.reactivex.rxjava2:rxandroid:$rootProject.rxandroidVersion"
-    implementation "io.reactivex.rxjava2:rxkotlin:$rootProject.rx_kotlin_version"
-
-    // Dagger dependencies
-    compileOnly 'org.glassfish:javax.annotation:10.0-b28'
-    implementation "com.google.dagger:dagger:$rootProject.daggerVersion"
-    implementation "com.google.dagger:dagger-android:$rootProject.daggerVersion"
-    implementation "com.google.dagger:dagger-android-support:$rootProject.daggerVersion"
-    kapt "com.google.dagger:dagger-compiler:$rootProject.daggerVersion"
-    kapt "com.google.dagger:dagger-android-processor:$rootProject.daggerVersion"
+    // Hilt Dependencies
+    implementation "com.google.dagger:hilt-android:$rootProject.hiltAndroidVersion"
+    ksp "com.google.dagger:hilt-android-compiler:$rootProject.hiltCompilerVersion"
 
     // Apache Common
     implementation "org.apache.commons:commons-lang3:$rootProject.apacheVersion"
@@ -124,9 +122,15 @@ dependencies {
 
     // Glide 4
     implementation "com.github.bumptech.glide:glide:$rootProject.glideVersion"
-    kapt "com.github.bumptech.glide:compiler:$rootProject.glideVersion"
+    ksp "com.github.bumptech.glide:compiler:$rootProject.glideVersion"
 
     // Sentry
     implementation "io.sentry:sentry-android:$rootProject.sentryVersion"
+
+    // Coroutines
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$rootProject.coroutinesVersion"
+
+    // Timber
+    implementation "com.jakewharton.timber:timber:$rootProject.timberVersion"
 
 }
