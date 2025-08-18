@@ -148,9 +148,6 @@ dependencies {
     implementation(libs.glide)
     ksp(libs.glide.compiler)
 
-    // Sentry
-    implementation(libs.sentry.android)
-
     // Coroutines
     implementation(libs.kotlinx.coroutines.android)
 }
