@@ -187,10 +187,6 @@ abstract class BaseActivity : AppCompatActivity() {
         return builder
     }
 
-    fun getDeviceUtil() : DeviceUtilities {
-        return deviceUtilities
-    }
-
     open fun noInternetConnection(throwable: Throwable) {
         throwable.printStackTrace()
         showShortToast(getString(R.string.an_error_occurred))
