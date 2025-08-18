@@ -116,7 +116,7 @@ dependencies {
 
     // App's dependencies
     implementation(libs.androidx.constraintlayout)
-    implementation(libs.androidx.appcompat)
+    // implementation(libs.androidx.appcompat) // Removed for full Material 3 migration
     implementation(libs.androidx.fragment.ktx)
     implementation(libs.androidx.activity.ktx)
 
@@ -150,4 +150,7 @@ dependencies {
 
     // Coroutines
     implementation(libs.kotlinx.coroutines.android)
+
+    // Material 3
+    implementation(libs.material)
 }

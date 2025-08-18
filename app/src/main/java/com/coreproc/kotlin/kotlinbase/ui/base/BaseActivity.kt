@@ -6,7 +6,7 @@ import android.content.Context
 import android.content.DialogInterface
 import android.os.Bundle
 import android.view.View
-import androidx.appcompat.app.AppCompatActivity
+import androidx.activity.ComponentActivity
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.ViewModelProvider
@@ -24,7 +24,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
 @AndroidEntryPoint
-abstract class BaseActivity : AppCompatActivity() {
+abstract class BaseActivity : ComponentActivity() {
 
     @Inject
     lateinit var deviceUtilities: DeviceUtilities
@@ -46,13 +46,11 @@ abstract class BaseActivity : AppCompatActivity() {
     private var listOfViewModels = mutableListOf<BaseViewModel>()
 
     override fun setTitle(titleId: Int) {
-        defaultToolbarBinding.toolbarTitleTextView.setText(titleId)
-        supportActionBar!!.title = ""
+        defaultToolbarBinding.defaultToolbar.title = getString(titleId)
     }
 
     override fun setTitle(title: CharSequence) {
-        defaultToolbarBinding.toolbarTitleTextView.text = title
-        supportActionBar!!.title = ""
+        defaultToolbarBinding.defaultToolbar.title = title
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -75,9 +73,6 @@ abstract class BaseActivity : AppCompatActivity() {
     @SuppressLint("ClickableViewAccessibility")
     fun initUi() {
         defaultToolbar = defaultToolbarBinding.defaultToolbar
-        setSupportActionBar(defaultToolbar)
-        defaultToolbarBinding.toolbarTitleTextView.text = supportActionBar?.title
-        setTitle(title)
         baseActivityBinding.loadingDialogRelativeLayout.setOnTouchListener { _, _ -> true }
 
         initViewStub()
@@ -103,29 +98,13 @@ abstract class BaseActivity : AppCompatActivity() {
 
 
     fun hideToolbar() {
-        if (defaultToolbar != null)
-            defaultToolbarBinding.parentToolbarRelativeLayout.visibility = View.GONE
+        defaultToolbar?.visibility = View.GONE
     }
 
     fun setToolbar(toolbar: Toolbar) {
         hideToolbar()
         defaultToolbar = toolbar
-        setSupportActionBar(toolbar)
         toolbar.visibility = View.VISIBLE
-    }
-
-    fun setCustomToolbarMenuItem(resourceId: Int, onClickListener: View.OnClickListener) {
-        defaultToolbarBinding.rightImageView.setImageResource(resourceId)
-        defaultToolbarBinding.rightImageView.setOnClickListener(onClickListener)
-        defaultToolbarBinding.rightImageView.visibility = View.VISIBLE
-    }
-
-    fun setCustomToolbarMenuItemVisibility(visibility: Int) {
-        defaultToolbarBinding.rightImageView.visibility = visibility
-    }
-
-    fun getCustomToolbarMenuItem(): AppCompatImageView {
-        return defaultToolbarBinding.rightImageView
     }
 
     fun showDefaultDialog(title: String, message: String) {
@@ -211,3 +190,4 @@ abstract class BaseActivity : AppCompatActivity() {
     }
 
 }
+
