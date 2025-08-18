@@ -6,38 +6,39 @@ plugins {
     id("dagger.hilt.android.plugin")
 }
 
-val SENTRY_DSN: String by project
+val sentryDsn: String by project
 
 // Release Info
-val RELEASE_KEY_ALIAS: String by project
-val RELEASE_KEY_PASSWORD: String by project
-val RELEASE_STORE_PASSWORD: String by project
-val RELEASE_STORE_FILE: String by project
+val releaseKeyAlias: String by project
+val releaseKeyPassword: String by project
+val releaseStorePassword: String by project
+val releaseStoreFile: String by project
 
-val APP_NAME: String by project
-val BASE_URL_INTERNAL: String by project
-val BASE_URL_STAGING: String by project
-val BASE_URL_PROD: String by project
+val appName: String by project
+val baseUrlInternal: String by project
+val baseUrlStaging: String by project
+val baseUrlProd: String by project
 
 android {
-    compileSdk = rootProject.extra["compileSdkVersion"].toString().toInt()
+    compileSdk = libs.versions.compileSdk.get().toInt()
 
     flavorDimensions += "default"
     defaultConfig {
         applicationId = "com.coreproc.kotlin.kotlinbase"
-        minSdk = rootProject.extra["minSdkVersion"].toString().toInt()
-        targetSdk = rootProject.extra["targetSdkVersion"].toString().toInt()
-        versionCode = rootProject.extra["code"].toString().toInt()
+        minSdk = libs.versions.minSdk.get().toInt()
+        targetSdk = libs.versions.targetSdk.get().toInt()
+        versionCode = libs.versions.versionCode.get().toInt()
         versionName =
-                "${rootProject.extra["versionMajor"]}.${rootProject.extra["versionMinor"]}.${rootProject.extra["versionPatch"]}+${rootProject.extra["code"]}"
+            "${libs.versions.versionMajor.get()}.${libs.versions.versionMinor.get()}.${libs.versions.versionPatch.get()}+${libs.versions.versionCode.get()}"
 
         testInstrumentationRunner = "android.support.test.runner.AndroidJUnitRunner"
 
-        buildConfigField("String", "SENTRY_DSN", SENTRY_DSN)
+        buildConfigField("String", "SENTRY_DSN", sentryDsn)
     }
 
     buildFeatures {
         viewBinding = true
+        buildConfig = true
     }
 
     compileOptions {
@@ -47,10 +48,10 @@ android {
 
     signingConfigs {
         create("release") {
-            keyAlias = RELEASE_KEY_ALIAS
-            keyPassword = RELEASE_KEY_PASSWORD
-            storeFile = file(RELEASE_STORE_FILE)
-            storePassword = RELEASE_STORE_PASSWORD
+            keyAlias = releaseKeyAlias
+            keyPassword = releaseKeyPassword
+            storeFile = file(releaseStoreFile)
+            storePassword = releaseStorePassword
         }
     }
 
@@ -71,27 +72,27 @@ android {
     productFlavors {
         create("internal") {
             dimension = "default"
-            resValue("string", "app_name_variant", "[INTERNAL] $APP_NAME")
+            resValue("string", "app_name_variant", "[INTERNAL] $appName")
             versionName =
-                    "${rootProject.extra["versionMajor"]}.${rootProject.extra["versionMinor"]}.${rootProject.extra["versionPatch"]}+${rootProject.extra["code"]}"
+                    "${libs.versions.versionMajor.get()}.${libs.versions.versionMinor.get()}.${libs.versions.versionPatch.get()}+${libs.versions.versionCode.get()}"
             setProperty("archivesBaseName", "kotlin-base-$versionName")
-            buildConfigField("String", "HOST", BASE_URL_INTERNAL)
+            buildConfigField("String", "HOST", baseUrlInternal)
         }
         create("staging") {
             dimension = "default"
-            resValue("string", "app_name_variant", "[STAGING] $APP_NAME")
+            resValue("string", "app_name_variant", "[STAGING] $appName")
             versionName =
-                    "${rootProject.extra["versionMajor"]}.${rootProject.extra["versionMinor"]}.${rootProject.extra["versionPatch"]}+${rootProject.extra["code"]}"
+                    "${libs.versions.versionMajor.get()}.${libs.versions.versionMinor.get()}.${libs.versions.versionPatch.get()}+${libs.versions.versionCode.get()}"
             setProperty("archivesBaseName", "kotlin-base-$versionName")
-            buildConfigField("String", "HOST", BASE_URL_STAGING)
+            buildConfigField("String", "HOST", baseUrlStaging)
         }
         create("production") {
             dimension = "default"
-            resValue("string", "app_name_variant", APP_NAME)
+            resValue("string", "app_name_variant", appName)
             versionName =
-                    "${rootProject.extra["versionMajor"]}.${rootProject.extra["versionMinor"]}.${rootProject.extra["versionPatch"]}+${rootProject.extra["code"]}"
+                    "${libs.versions.versionMajor.get()}.${libs.versions.versionMinor.get()}.${libs.versions.versionPatch.get()}+${libs.versions.versionCode.get()}"
             setProperty("archivesBaseName", "kotlin-base-$versionName")
-            buildConfigField("String", "HOST", BASE_URL_PROD)
+            buildConfigField("String", "HOST", baseUrlProd)
         }
     }
 
@@ -101,56 +102,51 @@ android {
 dependencies {
     implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar"))))
 
-    val kotlinVersion: String by rootProject.extra
-
-    implementation("org.jetbrains.kotlin:kotlin-reflect:$kotlinVersion")
-    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.8.10")
-    testImplementation("org.jetbrains.kotlin:kotlin-test:$kotlinVersion")
-    testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$kotlinVersion")
+    implementation(libs.kotlin.reflect)
+    implementation(libs.kotlin.stdlib.jdk8)
+    testImplementation(libs.kotlin.test)
+    testImplementation(libs.kotlin.test.junit)
 
     // Timber
-    implementation("com.jakewharton.timber:timber:${rootProject.extra["timberVersion"]}")
+    implementation(libs.timber)
 
     // App's dependencies
-    implementation("androidx.constraintlayout:constraintlayout:${rootProject.extra["constraintVersion"]}")
-    implementation("androidx.appcompat:appcompat:${rootProject.extra["supportLibraryVersion"]}")
-    implementation("androidx.fragment:fragment-ktx:${rootProject.extra["fragmentKtxVersion"]}")
-    implementation("androidx.activity:activity-ktx:${rootProject.extra["activityKtxVersion"]}")
+    implementation(libs.androidx.constraintlayout)
+    implementation(libs.androidx.appcompat)
+    implementation(libs.androidx.fragment.ktx)
+    implementation(libs.androidx.activity.ktx)
 
     // Lifecycle
-    implementation("androidx.lifecycle:lifecycle-common:${rootProject.extra["lifecycleVersion"]}")
-    implementation("androidx.lifecycle:lifecycle-runtime-ktx:${rootProject.extra["lifecycleVersion"]}")
-    implementation("androidx.lifecycle:lifecycle-livedata-ktx:${rootProject.extra["lifecycleVersion"]}")
+    implementation(libs.lifecycle.common)
+    implementation(libs.lifecycle.runtime.ktx)
+    implementation(libs.lifecycle.livedata.ktx)
 
-    implementation("android.arch.lifecycle:extensions:1.1.1")
-    implementation("android.arch.paging:runtime:1.0.1")
-    ksp("android.arch.lifecycle:common-java8:1.1.1")
+    implementation(libs.arch.lifecycle.extensions)
+    implementation(libs.arch.paging.runtime)
+    ksp(libs.arch.lifecycle.common.java8)
 
     // Hilt Dependencies
-    implementation("com.google.dagger:hilt-android:${rootProject.extra["hiltAndroidVersion"]}")
-    ksp("com.google.dagger:hilt-android-compiler:${rootProject.extra["hiltCompilerVersion"]}")
+    implementation(libs.hilt.android)
+    ksp(libs.hilt.android.compiler)
 
     // Apache Common
-    implementation("org.apache.commons:commons-lang3:${rootProject.extra["apacheVersion"]}")
+    implementation(libs.apache.commons.lang3)
 
     // Network
-    implementation("com.squareup.retrofit2:retrofit:${rootProject.extra["retrofitVersion"]}")
-    implementation("com.squareup.retrofit2:converter-gson:${rootProject.extra["retrofitVersion"]}")
-    implementation("com.squareup.retrofit2:adapter-rxjava2:${rootProject.extra["retrofitVersion"]}")
-    implementation("com.squareup.okhttp3:okhttp:${rootProject.extra["okhttpVersion"]}")
-    implementation("com.squareup.okhttp3:logging-interceptor:${rootProject.extra["okhttpVersion"]}")
-    implementation("com.google.code.gson:gson:${rootProject.extra["gsonVersion"]}")
+    implementation(libs.retrofit)
+    implementation(libs.retrofit.converter.gson)
+    implementation(libs.retrofit.adapter.rxjava2)
+    implementation(libs.okhttp)
+    implementation(libs.okhttp.logging.interceptor)
+    implementation(libs.gson)
 
     // Glide
-    implementation("com.github.bumptech.glide:glide:${rootProject.extra["glideVersion"]}")
-    ksp("com.github.bumptech.glide:compiler:${rootProject.extra["glideVersion"]}")
+    implementation(libs.glide)
+    ksp(libs.glide.compiler)
 
     // Sentry
-    implementation("io.sentry:sentry-android:${rootProject.extra["sentryVersion"]}")
+    implementation(libs.sentry.android)
 
     // Coroutines
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:${rootProject.extra["coroutinesVersion"]}")
-
-    // Timber (again, in case you want to keep both)
-    implementation("com.jakewharton.timber:timber:${rootProject.extra["timberVersion"]}")
+    implementation(libs.kotlinx.coroutines.android)
 }
