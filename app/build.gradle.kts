@@ -6,6 +6,15 @@ plugins {
     id("dagger.hilt.android.plugin")
 }
 
+// Version Info
+val versionMajor = 0    // backward compatibility
+val versionMinor = 0    // new feature or a major behavior change
+val versionPatch = 1    // fixes or minor patch
+
+// For Bitrise
+// See step Change value in file (which replaces code's value with BITRISE_BUILD_NUMBER)
+val code = 1
+
 val sentryDsn: String by project
 
 // Release Info
@@ -27,9 +36,7 @@ android {
         applicationId = "com.coreproc.kotlin.kotlinbase"
         minSdk = libs.versions.minSdk.get().toInt()
         targetSdk = libs.versions.targetSdk.get().toInt()
-        versionCode = libs.versions.versionCode.get().toInt()
-        versionName =
-            "${libs.versions.versionMajor.get()}.${libs.versions.versionMinor.get()}.${libs.versions.versionPatch.get()}+${libs.versions.versionCode.get()}"
+        versionCode = code
 
         testInstrumentationRunner = "android.support.test.runner.AndroidJUnitRunner"
 
@@ -73,24 +80,21 @@ android {
         create("internal") {
             dimension = "default"
             resValue("string", "app_name_variant", "[INTERNAL] $appName")
-            versionName =
-                    "${libs.versions.versionMajor.get()}.${libs.versions.versionMinor.get()}.${libs.versions.versionPatch.get()}+${libs.versions.versionCode.get()}"
+            versionName = "$versionMajor.$versionMinor.$versionPatch-$code"
             setProperty("archivesBaseName", "kotlin-base-$versionName")
             buildConfigField("String", "HOST", baseUrlInternal)
         }
         create("staging") {
             dimension = "default"
             resValue("string", "app_name_variant", "[STAGING] $appName")
-            versionName =
-                    "${libs.versions.versionMajor.get()}.${libs.versions.versionMinor.get()}.${libs.versions.versionPatch.get()}+${libs.versions.versionCode.get()}"
+            versionName = "$versionMajor.$versionMinor.$versionPatch-$code"
             setProperty("archivesBaseName", "kotlin-base-$versionName")
             buildConfigField("String", "HOST", baseUrlStaging)
         }
         create("production") {
             dimension = "default"
             resValue("string", "app_name_variant", appName)
-            versionName =
-                    "${libs.versions.versionMajor.get()}.${libs.versions.versionMinor.get()}.${libs.versions.versionPatch.get()}+${libs.versions.versionCode.get()}"
+            versionName = "$versionMajor.$versionMinor.$versionPatch-$code"
             setProperty("archivesBaseName", "kotlin-base-$versionName")
             buildConfigField("String", "HOST", baseUrlProd)
         }
