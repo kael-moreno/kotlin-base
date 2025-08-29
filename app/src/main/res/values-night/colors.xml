@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resources>
+    <!-- Dark mode specific colors -->
+    <color name="colorPrimary">#EBBE2F</color>
+    <color name="colorPrimaryDark">#997d25</color>
+    <color name="colorPrimaryLight">#F7E5AC</color>
+    <color name="textAreaDark">#FFFFFF</color>
+    <color name="colorAccent">#EBBE2F</color>
+
+    <!-- Dark mode background colors -->
+    <color name="white">#121212</color>
+    <color name="black">#FFFFFF</color>
+    <color name="dark_gray">#1E1E1E</color>
+
+    <!-- Dark mode specific UI colors -->
+    <color name="divider">#333333</color>
+    <color name="message_dialog">#2c2c2c</color>
+    <color name="subtitleTextColor">#AAAAAA</color>
+    <color name="unselectedTextColor">#888888</color>
+
+    <!-- Navigation colors for dark mode -->
+    <color name="navigationTextIconSelected">#FFFFFF</color>
+    <color name="navigationItemSelected">#333333</color>
+    <color name="bottomNavigationTextIconSelected">#EBBE2F</color>
+
+    <!-- Keep same social media colors -->
+    <color name="primaryFacebook">#4267B2</color>
+    <color name="primaryDarkFacebook">#314d86</color>
+    <color name="primaryGoogle">#E34033</color>
+
+    <!-- Keep utility colors same -->
+    <color name="navigationBottomYellow">#d5a22a</color>
+    <color name="primaryYellow">#EBBE2F</color>
+    <color name="primaryDarkYellow">#997d25</color>
+    <color name="dimgray">#707070</color>
+    <color name="pale_black">#77FFFFFF</color>
+    <color name="pale_black_overlay">#91FFFFFF</color>
+    <color name="transparent">#00000000</color>
+</resources>
+
