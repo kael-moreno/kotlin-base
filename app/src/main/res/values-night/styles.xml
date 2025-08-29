@@ -36,6 +36,17 @@
         <item name="android:windowLightNavigationBar">false</item>
     </style>
 
+    <!-- Toolbar Theme for Dark Mode -->
+    <style name="AppTheme.Toolbar" parent="Widget.Material3.Toolbar">
+        <item name="android:background">?attr/colorSurface</item>
+        <item name="titleTextColor">?attr/colorOnSurface</item>
+        <item name="subtitleTextColor">?attr/colorOnSurfaceVariant</item>
+        <item name="android:textColorPrimary">?attr/colorOnSurface</item>
+        <item name="android:textColorSecondary">?attr/colorOnSurfaceVariant</item>
+        <item name="colorControlNormal">?attr/colorOnSurface</item>
+        <item name="colorControlActivated">?attr/colorPrimary</item>
+    </style>
+
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.Material3.Dark.ActionBar" />
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.Material3.Dark" />
 </resources>
