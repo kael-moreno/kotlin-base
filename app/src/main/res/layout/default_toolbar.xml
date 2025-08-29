@@ -12,5 +12,4 @@
     app:contentInsetStartWithNavigation="0dp"
     app:elevation="0dp"
     app:title="@string/app_name_variant"
-    android:background="@color/colorPrimary"
     app:popupTheme="@style/AppTheme.PopupOverlay" />

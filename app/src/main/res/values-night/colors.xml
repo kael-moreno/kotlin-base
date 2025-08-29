@@ -1,40 +1,47 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <resources>
-    <!-- Dark mode specific colors -->
-    <color name="colorPrimary">#EBBE2F</color>
-    <color name="colorPrimaryDark">#997d25</color>
-    <color name="colorPrimaryLight">#F7E5AC</color>
-    <color name="textAreaDark">#FFFFFF</color>
-    <color name="colorAccent">#EBBE2F</color>
+    <!-- Material 3 Color System - Dark Mode -->
 
-    <!-- Dark mode background colors -->
-    <color name="white">#121212</color>
-    <color name="black">#FFFFFF</color>
-    <color name="dark_gray">#1E1E1E</color>
+    <!-- Primary colors -->
+    <color name="md_theme_light_primary">#EBBE2F</color>
+    <color name="md_theme_light_onPrimary">#000000</color>
+    <color name="md_theme_light_primaryContainer">#F7E5AC</color>
+    <color name="md_theme_light_onPrimaryContainer">#000000</color>
 
-    <!-- Dark mode specific UI colors -->
-    <color name="divider">#333333</color>
-    <color name="message_dialog">#2c2c2c</color>
-    <color name="subtitleTextColor">#AAAAAA</color>
-    <color name="unselectedTextColor">#888888</color>
+    <!-- Secondary colors -->
+    <color name="md_theme_light_secondary">#997d25</color>
+    <color name="md_theme_light_onSecondary">#FFFFFF</color>
+    <color name="md_theme_light_secondaryContainer">#333333</color>
+    <color name="md_theme_light_onSecondaryContainer">#FFFFFF</color>
 
-    <!-- Navigation colors for dark mode -->
-    <color name="navigationTextIconSelected">#FFFFFF</color>
-    <color name="navigationItemSelected">#333333</color>
-    <color name="bottomNavigationTextIconSelected">#EBBE2F</color>
+    <!-- Surface colors -->
+    <color name="md_theme_light_surface">#121212</color>
+    <color name="md_theme_light_onSurface">#FFFFFF</color>
+    <color name="md_theme_light_surfaceVariant">#1E1E1E</color>
+    <color name="md_theme_light_onSurfaceVariant">#CCCCCC</color>
 
-    <!-- Keep same social media colors -->
-    <color name="primaryFacebook">#4267B2</color>
-    <color name="primaryDarkFacebook">#314d86</color>
-    <color name="primaryGoogle">#E34033</color>
+    <!-- Background colors -->
+    <color name="md_theme_light_background">#121212</color>
+    <color name="md_theme_light_onBackground">#FFFFFF</color>
 
-    <!-- Keep utility colors same -->
-    <color name="navigationBottomYellow">#d5a22a</color>
-    <color name="primaryYellow">#EBBE2F</color>
-    <color name="primaryDarkYellow">#997d25</color>
-    <color name="dimgray">#707070</color>
-    <color name="pale_black">#77FFFFFF</color>
-    <color name="pale_black_overlay">#91FFFFFF</color>
-    <color name="transparent">#00000000</color>
+    <!-- Error colors -->
+    <color name="md_theme_light_error">#FFB4AB</color>
+    <color name="md_theme_light_onError">#690005</color>
+    <color name="md_theme_light_errorContainer">#93000A</color>
+    <color name="md_theme_light_onErrorContainer">#FFDAD6</color>
+
+    <!-- Outline colors -->
+    <color name="md_theme_light_outline">#444444</color>
+    <color name="md_theme_light_outlineVariant">#666666</color>
+
+    <!-- Legacy colors for backward compatibility -->
+    <color name="colorPrimary">@color/md_theme_light_primary</color>
+    <color name="colorPrimaryDark">@color/md_theme_light_primaryContainer</color>
+    <color name="colorAccent">@color/md_theme_light_secondary</color>
+    <color name="textAreaDark">@color/md_theme_light_onBackground</color>
+
+    <!-- Theme-specific semantic colors -->
+    <color name="divider">@color/md_theme_light_outline</color>
+    <color name="message_dialog">@color/md_theme_light_surfaceVariant</color>
+
 </resources>
-
