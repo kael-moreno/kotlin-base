@@ -3,45 +3,45 @@
     <!-- Material 3 Color System - Dark Mode -->
 
     <!-- Primary colors -->
-    <color name="md_theme_light_primary">#EBBE2F</color>
-    <color name="md_theme_light_onPrimary">#000000</color>
-    <color name="md_theme_light_primaryContainer">#F7E5AC</color>
-    <color name="md_theme_light_onPrimaryContainer">#000000</color>
+    <color name="md_theme_primary">#03A9F4</color>
+    <color name="md_theme_onPrimary">#000000</color>
+    <color name="md_theme_primaryContainer">#A2E4FF</color>
+    <color name="md_theme_onPrimaryContainer">#000000</color>
 
     <!-- Secondary colors -->
-    <color name="md_theme_light_secondary">#997d25</color>
-    <color name="md_theme_light_onSecondary">#FFFFFF</color>
-    <color name="md_theme_light_secondaryContainer">#333333</color>
-    <color name="md_theme_light_onSecondaryContainer">#FFFFFF</color>
+    <color name="md_theme_secondary">#2196F3</color>
+    <color name="md_theme_onSecondary">#FFFFFF</color>
+    <color name="md_theme_secondaryContainer">#333333</color>
+    <color name="md_theme_onSecondaryContainer">#FFFFFF</color>
 
     <!-- Surface colors -->
-    <color name="md_theme_light_surface">#121212</color>
-    <color name="md_theme_light_onSurface">#FFFFFF</color>
-    <color name="md_theme_light_surfaceVariant">#1E1E1E</color>
-    <color name="md_theme_light_onSurfaceVariant">#CCCCCC</color>
+    <color name="md_theme_surface">#061F35</color>
+    <color name="md_theme_onSurface">#FFFFFF</color>
+    <color name="md_theme_surfaceVariant">#1E1E1E</color>
+    <color name="md_theme_onSurfaceVariant">#CCCCCC</color>
 
     <!-- Background colors -->
-    <color name="md_theme_light_background">#121212</color>
-    <color name="md_theme_light_onBackground">#FFFFFF</color>
+    <color name="md_theme_background">#061F35</color>
+    <color name="md_theme_onBackground">#FFFFFF</color>
 
     <!-- Error colors -->
-    <color name="md_theme_light_error">#FFB4AB</color>
-    <color name="md_theme_light_onError">#690005</color>
-    <color name="md_theme_light_errorContainer">#93000A</color>
-    <color name="md_theme_light_onErrorContainer">#FFDAD6</color>
+    <color name="md_theme_error">#FFB4AB</color>
+    <color name="md_theme_onError">#690005</color>
+    <color name="md_theme_errorContainer">#93000A</color>
+    <color name="md_theme_onErrorContainer">#FFDAD6</color>
 
     <!-- Outline colors -->
-    <color name="md_theme_light_outline">#444444</color>
-    <color name="md_theme_light_outlineVariant">#666666</color>
+    <color name="md_theme_outline">#444444</color>
+    <color name="md_theme_outlineVariant">#666666</color>
 
     <!-- Legacy colors for backward compatibility -->
-    <color name="colorPrimary">@color/md_theme_light_primary</color>
-    <color name="colorPrimaryDark">@color/md_theme_light_primaryContainer</color>
-    <color name="colorAccent">@color/md_theme_light_secondary</color>
-    <color name="textAreaDark">@color/md_theme_light_onBackground</color>
+    <color name="colorPrimary">@color/md_theme_primary</color>
+    <color name="colorPrimaryDark">@color/md_theme_primaryContainer</color>
+    <color name="colorAccent">@color/md_theme_secondary</color>
+    <color name="textAreaDark">@color/md_theme_onBackground</color>
 
     <!-- Theme-specific semantic colors -->
-    <color name="divider">@color/md_theme_light_outline</color>
-    <color name="message_dialog">@color/md_theme_light_surfaceVariant</color>
+    <color name="divider">@color/md_theme_outline</color>
+    <color name="message_dialog">@color/md_theme_surfaceVariant</color>
 
 </resources>

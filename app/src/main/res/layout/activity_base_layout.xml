@@ -4,10 +4,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
-    <LinearLayout
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:layout_height="match_parent">
 
         <include
                 android:id="@+id/toolbar_layout"
@@ -17,9 +16,10 @@
                 android:id="@+id/base_view_stub"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:layout_marginTop="?attr/actionBarSize"
                 android:inflatedId="@+id/extraLayout"/>
 
-    </LinearLayout>
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
 
     <RelativeLayout
