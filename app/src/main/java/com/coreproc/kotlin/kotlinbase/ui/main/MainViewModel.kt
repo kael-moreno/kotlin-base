@@ -26,14 +26,12 @@ constructor(private val apiUseCase: ApiUseCase) : BaseViewModel() {
         apiUseCase.run("")
             .collectLatest { resource ->
                 when (resource) {
-                    is ResponseHandler.Loading ->
-                        loading.send(resource.loading)
-                    is ResponseHandler.Error ->
-                        error.send(resource.errorBody!!)
+                    is ResponseHandler.Loading -> loading.send(resource.loading)
+                    is ResponseHandler.Error -> error.send(resource.errorBody!!)
 
-                    is ResponseHandler.Failure ->
-                        failure.send(resource.exception ?: Throwable(message = "Unknown error occurred"))
+                    is ResponseHandler.Failure -> failure.send(resource.exception ?: Throwable(message = "Unknown error occurred"))
                     is ResponseHandler.Success -> {
+                        loading.send(false)
                         if (resource.result != null) {
                             successChannel.send(resource.result)
                         }

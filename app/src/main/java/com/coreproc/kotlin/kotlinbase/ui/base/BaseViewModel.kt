@@ -25,6 +25,7 @@ abstract class BaseViewModel: ViewModel() {
         }.launchIn(baseActivity.lifecycleScope)
 
         error.receiveAsFlow().onEach {
+            loading.send(false)
             if (it.http_code == 401) {
                 baseActivity.unauthorized()
             } else {
@@ -33,11 +34,13 @@ abstract class BaseViewModel: ViewModel() {
         }.launchIn(baseActivity.lifecycleScope)
 
         failure.receiveAsFlow().onEach {
+            loading.send(false)
             // Handle error
             baseActivity.error(ErrorBody(500, "Error", it.message, null))
         }.launchIn(baseActivity.lifecycleScope)
 
         noInternetConnection.receiveAsFlow().onEach {
+            loading.send(false)
             baseActivity.noInternetConnection(it)
         }.launchIn(baseActivity.lifecycleScope)
     }

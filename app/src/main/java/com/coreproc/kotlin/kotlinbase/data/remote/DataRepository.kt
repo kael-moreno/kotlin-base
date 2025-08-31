@@ -18,9 +18,8 @@ constructor(
     override suspend fun getSomething(): Flow<ResponseHandler<SampleResponse>> {
 
         return flow {
-            emit(ResponseHandler.Loading(loading = true))
-            val response = apiInterface.getSomething()
             emit(ResponseHandler.Loading())
+            val response = apiInterface.getSomething()
 
             if (!response.isSuccessful) {
                 emit(ResponseHandler.Error(ApiError.parseError(response)))
@@ -29,7 +28,6 @@ constructor(
 
             emit(ResponseHandler.Success(data = response.body()!!))
         }.catch { ex ->
-            emit(ResponseHandler.Loading())
             if (ex is CancellationException)
                 throw ex
 
