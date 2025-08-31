@@ -153,4 +153,8 @@ dependencies {
 
     // Material 3
     implementation(libs.material)
+
+    // DataStore for secure preferences (modern replacement for EncryptedSharedPreferences)
+    implementation(libs.androidx.datastore.preferences)
+    implementation(libs.androidx.datastore.preferences.core)
 }

@@ -1,27 +1,64 @@
 package com.coreproc.kotlin.kotlinbase.misc
 
 import android.content.Context
-import com.coreproc.kotlin.kotlinbase.App
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.stringPreferencesKey
+import androidx.datastore.preferences.preferencesDataStore
+import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.map
+import javax.inject.Inject
+import javax.inject.Singleton
 
-object AppPreferences {
-    private val API_KEY = "API_KEY"
+// Extension property to create DataStore
+private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "app_preferences")
 
-    private fun logout() {
-        val prefs = App.instance!!.getSharedPreferences(App.instance!!.packageName, Context.MODE_PRIVATE)
-        prefs.edit().putString(API_KEY, "").apply()
+@Singleton
+class AppPreferences @Inject constructor(
+    @ApplicationContext private val context: Context
+) {
+    private val API_KEY = stringPreferencesKey("api_key")
+
+    suspend fun saveApiKey(key: String) {
+        context.dataStore.edit { preferences ->
+            preferences[API_KEY] = key
+        }
     }
 
-    fun saveApiKey(key: String) {
-        val prefs = App.instance!!.getSharedPreferences(App.instance!!.packageName, Context.MODE_PRIVATE)
-        prefs.edit().putString(API_KEY, key).apply()
+    suspend fun getApiKey(): String? {
+        return context.dataStore.data.map { preferences ->
+            preferences[API_KEY]
+        }.first()
     }
 
-    fun getApiKey(): String? {
-        return try {
-            val prefs = App.instance!!.getSharedPreferences(App.instance!!.packageName, Context.MODE_PRIVATE)
-            return prefs.getString(API_KEY, "")
-        } catch (ex: Exception) {
-            null
+    fun getApiKeyFlow(): Flow<String?> {
+        return context.dataStore.data.map { preferences ->
+            preferences[API_KEY]
+        }
+    }
+
+    suspend fun clearApiKey() {
+        context.dataStore.edit { preferences ->
+            preferences.remove(API_KEY)
+        }
+    }
+
+    suspend fun hasApiKey(): Boolean {
+        return !getApiKey().isNullOrEmpty()
+    }
+
+    fun hasApiKeyFlow(): Flow<Boolean> {
+        return context.dataStore.data.map { preferences ->
+            !preferences[API_KEY].isNullOrEmpty()
+        }
+    }
+
+    suspend fun logout() {
+        context.dataStore.edit { preferences ->
+            preferences.clear()
         }
     }
 }

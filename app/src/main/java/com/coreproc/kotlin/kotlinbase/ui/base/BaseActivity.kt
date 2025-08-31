@@ -17,6 +17,7 @@ import com.coreproc.kotlin.kotlinbase.databinding.ActivityBaseLayoutBinding
 import com.coreproc.kotlin.kotlinbase.databinding.DefaultToolbarBinding
 import com.coreproc.kotlin.kotlinbase.extensions.setVisible
 import com.coreproc.kotlin.kotlinbase.extensions.showShortToast
+import com.coreproc.kotlin.kotlinbase.misc.AppPreferences
 import com.coreproc.kotlin.kotlinbase.utils.DeviceUtilities
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
@@ -27,6 +28,9 @@ abstract class BaseActivity : ComponentActivity() {
 
     @Inject
     lateinit var deviceUtilities: DeviceUtilities
+
+    @Inject
+    lateinit var appPreferences: AppPreferences
 
     private lateinit var baseActivityBinding: ActivityBaseLayoutBinding
 

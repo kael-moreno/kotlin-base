@@ -1,4 +1,5 @@
 [versions]
+datastorePreferencesCore = "1.1.7"
 lifecycle = "2.9.2"
 hilt = "2.51.1"
 hiltCompiler = "2.51.1"
@@ -9,6 +10,7 @@ gson = "2.11.0"
 okhttp = "4.12.0"
 glide = "4.16.0"
 coroutines = "1.9.0"
+securityCrypto = "1.1.0"
 timber = "5.0.1"
 constraintlayout = "2.2.1"
 fragmentKtx = "1.8.9"
@@ -22,6 +24,9 @@ targetSdk = "36"
 compileSdk = "36"
 
 [libraries]
+androidx-datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastorePreferencesCore" }
+androidx-datastore-preferences-core = { module = "androidx.datastore:datastore-preferences-core", version.ref = "datastorePreferencesCore" }
+androidx-security-crypto = { module = "androidx.security:security-crypto", version.ref = "securityCrypto" }
 lifecycle-common = { module = "androidx.lifecycle:lifecycle-common", version.ref = "lifecycle" }
 lifecycle-runtime-ktx = { module = "androidx.lifecycle:lifecycle-runtime-ktx", version.ref = "lifecycle" }
 lifecycle-livedata-ktx = { module = "androidx.lifecycle:lifecycle-livedata-ktx", version.ref = "lifecycle" }
