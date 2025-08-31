@@ -2,13 +2,20 @@ package com.coreproc.kotlin.kotlinbase.extensions
 
 import com.coreproc.kotlin.kotlinbase.data.remote.ErrorBody
 import com.coreproc.kotlin.kotlinbase.data.remote.ResponseHandler
+import com.coreproc.kotlin.kotlinbase.data.remote.ApiError
 import com.coreproc.kotlin.kotlinbase.ui.base.BaseActivity
 import com.coreproc.kotlin.kotlinbase.ui.base.BaseViewModel
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.flow
 import okhttp3.internal.http2.ConnectionShutdownException
+import retrofit2.Response
+import timber.log.Timber
 import java.io.IOException
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import java.nio.channels.NotYetConnectedException
+import kotlin.coroutines.cancellation.CancellationException
 
 suspend fun Throwable.postError(baseViewModel: BaseViewModel, baseActivity: BaseActivity) {
     baseViewModel.loading.send(false)
@@ -41,5 +48,40 @@ suspend fun <T> ResponseHandler<T>.handleResponse(baseViewModel: BaseViewModel, 
                 onSuccess(this.result)
             }
         }
+    }
+}
+/**
+ * Extension function to handle API calls with the standard pattern and custom success handling.
+ * This allows you to perform additional operations on successful responses in the repository.
+ *
+ * @param apiCall Suspend function that makes the API call and returns a Retrofit Response
+ * @param onSuccess Optional callback to handle the successful response data before emitting
+ * @return Flow of ResponseHandler with the API response data
+ */
+fun <T> handleApiCall(
+    apiCall: suspend () -> Response<T>,
+    onSuccess: (suspend (T) -> Unit)? = null
+): Flow<ResponseHandler<T>> {
+    return flow {
+        emit(ResponseHandler.Loading())
+        val response = apiCall()
+
+        if (!response.isSuccessful) {
+            emit(ResponseHandler.Error(ApiError.parseError(response)))
+            return@flow
+        }
+
+        val responseBody = response.body()!!
+
+        // Execute custom success handling if provided
+        onSuccess?.invoke(responseBody)
+
+        emit(ResponseHandler.Success(data = responseBody))
+    }.catch { ex ->
+        if (ex is CancellationException)
+            throw ex
+
+        Timber.e(ex)
+        emit(ResponseHandler.Failure(ex))
     }
 }
