@@ -4,6 +4,7 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.lifecycleScope
 import com.coreproc.kotlin.kotlinbase.data.remote.ErrorBody
+import com.coreproc.kotlin.kotlinbase.extensions.postError
 import io.reactivex.disposables.CompositeDisposable
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.launchIn
@@ -17,6 +18,7 @@ abstract class BaseViewModel: ViewModel() {
     val loading = Channel<Boolean>()
     val error = Channel<ErrorBody>()
     val failure = Channel<Throwable>()
+    val unauthorized = Channel<Boolean>()
     val noInternetConnection = Channel<Throwable>()
 
     fun bindActivity(baseActivity: BaseActivity) {
@@ -25,22 +27,18 @@ abstract class BaseViewModel: ViewModel() {
         }.launchIn(baseActivity.lifecycleScope)
 
         error.receiveAsFlow().onEach {
-            loading.send(false)
-            if (it.http_code == 401) {
-                baseActivity.unauthorized()
-            } else {
-                baseActivity.error(it)
-            }
+            it.postError(this, baseActivity)
         }.launchIn(baseActivity.lifecycleScope)
 
         failure.receiveAsFlow().onEach {
-            loading.send(false)
-            // Handle error
-            baseActivity.error(ErrorBody(500, "Error", it.message, null))
+            it.postError(this, baseActivity)
+        }.launchIn(baseActivity.lifecycleScope)
+
+        unauthorized.receiveAsFlow().onEach {
+            baseActivity.unauthorized()
         }.launchIn(baseActivity.lifecycleScope)
 
         noInternetConnection.receiveAsFlow().onEach {
-            loading.send(false)
             baseActivity.noInternetConnection(it)
         }.launchIn(baseActivity.lifecycleScope)
     }

@@ -52,8 +52,6 @@ abstract class BaseActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Timber.e("BaseActivity: onCreate called - savedInstanceState = ${if (savedInstanceState == null) "null (first creation)" else "not null (recreation)"}")
-        Timber.e("BaseActivity: Activity instance hashCode = ${this.hashCode()}")
         context = this
         baseActivityBinding = ActivityBaseLayoutBinding.inflate(layoutInflater)
         defaultToolbarBinding = baseActivityBinding.toolbarLayout
@@ -151,7 +149,7 @@ abstract class BaseActivity : ComponentActivity() {
 
     open fun noInternetConnection(throwable: Throwable) {
         throwable.printStackTrace()
-        showShortToast(getString(R.string.an_error_occurred))
+        showShortToast(getString(R.string.no_internet_connection))
     }
 
     open fun loading(it: Boolean) {
