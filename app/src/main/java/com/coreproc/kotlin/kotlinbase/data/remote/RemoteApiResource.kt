@@ -6,8 +6,8 @@ sealed class ResponseHandler<out T>(
     val errorBody: ErrorBody? = null,
     val exception: Throwable? = null
 ) {
-    class Loading<T>(loading: Boolean) : ResponseHandler<T>()
-    class Success<T>(data: T) : ResponseHandler<T>(result = data)
-    class Error<T>(errorBody: ErrorBody) : ResponseHandler<T>(errorBody = errorBody)
-    class Failure<T>(exception: Throwable) : ResponseHandler<T>(exception = exception)
+    class Loading<T>(loading: Boolean = false) : ResponseHandler<T>(loading = loading)
+    class Success<T>(data: T) : ResponseHandler<T>(result = data, loading = false)
+    class Error<T>(errorBody: ErrorBody) : ResponseHandler<T>(errorBody = errorBody, loading = false)
+    class Failure<T>(exception: Throwable) : ResponseHandler<T>(exception = exception, loading = false)
 }

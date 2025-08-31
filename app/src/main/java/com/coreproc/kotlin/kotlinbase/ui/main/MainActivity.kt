@@ -28,15 +28,9 @@ class MainActivity : BaseActivity() {
 
     private fun initObservables() {
         viewModel.bindActivity(this)
-        viewModel.successStateFlow.onEach {
-            loading(it.isLoading)
-            when {
-                it.data != null -> {
-                    activityMainBinding.helloWorldTextView.text = it.data.setup
-                    showShortToast(it.data.punchline)
-                }
-            }
-
+        viewModel.successFlow.onEach {
+            activityMainBinding.helloWorldTextView.text = it.setup
+            showShortToast(it.punchline)
         }.launchIn(lifecycleScope)
 
         viewModel.getSomething()
