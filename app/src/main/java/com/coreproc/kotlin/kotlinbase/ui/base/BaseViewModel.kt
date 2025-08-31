@@ -16,7 +16,7 @@ abstract class BaseViewModel: ViewModel() {
 
     val loading = Channel<Boolean>()
     val error = Channel<ErrorBody>()
-    val failure = Channel<String>()
+    val failure = Channel<Throwable>()
     val noInternetConnection = Channel<Throwable>()
 
     fun bindActivity(baseActivity: BaseActivity) {
@@ -30,6 +30,11 @@ abstract class BaseViewModel: ViewModel() {
             } else {
                 baseActivity.error(it)
             }
+        }.launchIn(baseActivity.lifecycleScope)
+
+        failure.receiveAsFlow().onEach {
+            // Handle error
+            baseActivity.error(ErrorBody(500, "Error", it.message, null))
         }.launchIn(baseActivity.lifecycleScope)
 
         noInternetConnection.receiveAsFlow().onEach {

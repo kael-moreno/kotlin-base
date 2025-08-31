@@ -7,9 +7,7 @@ import android.content.DialogInterface
 import android.os.Bundle
 import android.view.View
 import androidx.activity.ComponentActivity
-import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.Toolbar
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -21,6 +19,7 @@ import com.coreproc.kotlin.kotlinbase.extensions.setVisible
 import com.coreproc.kotlin.kotlinbase.extensions.showShortToast
 import com.coreproc.kotlin.kotlinbase.utils.DeviceUtilities
 import dagger.hilt.android.AndroidEntryPoint
+import timber.log.Timber
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -53,6 +52,8 @@ abstract class BaseActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        Timber.e("BaseActivity: onCreate called - savedInstanceState = ${if (savedInstanceState == null) "null (first creation)" else "not null (recreation)"}")
+        Timber.e("BaseActivity: Activity instance hashCode = ${this.hashCode()}")
         context = this
         baseActivityBinding = ActivityBaseLayoutBinding.inflate(layoutInflater)
         defaultToolbarBinding = baseActivityBinding.toolbarLayout
@@ -171,4 +172,3 @@ abstract class BaseActivity : ComponentActivity() {
     }
 
 }
-

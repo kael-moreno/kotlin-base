@@ -34,7 +34,6 @@ constructor(
                 throw ex
 
             Timber.e(ex)
-
             emit(ResponseHandler.Failure(ex))
         }
     }
