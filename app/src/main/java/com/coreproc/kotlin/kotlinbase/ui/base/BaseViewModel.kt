@@ -22,7 +22,6 @@ abstract class BaseViewModel: ViewModel() {
 
     fun bindActivity(baseActivity: BaseActivity) {
         loading.receiveAsFlow().onEach {
-            Timber.e("Loading $it")
             baseActivity.loading(it)
         }.launchIn(baseActivity.lifecycleScope)
 

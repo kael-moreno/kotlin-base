@@ -21,9 +21,10 @@ class MainActivity : BaseActivity() {
     override fun getLayoutResource(): Int = R.layout.activity_main
 
     override fun initialize() {
+        activityMainBinding = ActivityMainBinding.bind(getChildActivityView())
         applyWindowInsets()
         initObservables()
-        activityMainBinding = ActivityMainBinding.bind(getChildActivityView())
+        initClicks()
     }
 
     private fun initObservables() {
@@ -34,5 +35,11 @@ class MainActivity : BaseActivity() {
         }.launchIn(lifecycleScope)
 
         viewModel.getSomething()
+    }
+
+    private fun initClicks() {
+        activityMainBinding.retryButton.setOnClickListener {
+            viewModel.getSomething()
+        }
     }
 }
