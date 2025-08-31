@@ -17,6 +17,13 @@ import java.net.UnknownHostException
 import java.nio.channels.NotYetConnectedException
 import kotlin.coroutines.cancellation.CancellationException
 
+/**
+ * Extension function to post error states to the BaseViewModel and handle UI updates in BaseActivity.
+ * This function manages loading state, no internet connection, unauthorized access, and general errors.
+ *
+ * @param baseViewModel The ViewModel to update with loading and error states
+ * @param baseActivity The Activity to display error messages
+ */
 suspend fun Throwable.postError(baseViewModel: BaseViewModel, baseActivity: BaseActivity) {
     baseViewModel.loading.send(false)
     when (this) {
@@ -37,6 +44,13 @@ suspend fun Throwable.postError(baseViewModel: BaseViewModel, baseActivity: Base
     }
 }
 
+/**
+ * Extension function to handle the ResponseHandler and update the BaseViewModel accordingly.
+ * This function manages loading, error, failure, and success states.
+ *
+ * @param baseViewModel The ViewModel to update with loading, error, and failure states
+ * @param onSuccess Callback to handle the successful response data
+ */
 suspend fun <T> ResponseHandler<T>.handleResponse(baseViewModel: BaseViewModel, onSuccess: suspend (T) -> Unit) {
     when (this) {
         is ResponseHandler.Loading -> baseViewModel.loading.send(this.loading)
@@ -50,6 +64,7 @@ suspend fun <T> ResponseHandler<T>.handleResponse(baseViewModel: BaseViewModel, 
         }
     }
 }
+
 /**
  * Extension function to handle API calls with the standard pattern and custom success handling.
  * This allows you to perform additional operations on successful responses in the repository.

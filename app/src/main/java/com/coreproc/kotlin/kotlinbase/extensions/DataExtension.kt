@@ -1,4 +1,4 @@
-package com.coreproc.kaching.familyplan.extensions
+package com.coreproc.kotlin.kotlinbase.extensions
 
 import java.text.DecimalFormat
 import java.text.SimpleDateFormat

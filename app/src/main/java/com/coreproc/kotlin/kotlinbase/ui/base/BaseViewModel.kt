@@ -1,16 +1,13 @@
 package com.coreproc.kotlin.kotlinbase.ui.base
 
-import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.lifecycleScope
 import com.coreproc.kotlin.kotlinbase.data.remote.ErrorBody
 import com.coreproc.kotlin.kotlinbase.extensions.postError
-import io.reactivex.disposables.CompositeDisposable
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.receiveAsFlow
-import timber.log.Timber
 
 
 abstract class BaseViewModel: ViewModel() {
@@ -21,6 +18,12 @@ abstract class BaseViewModel: ViewModel() {
     val unauthorized = Channel<Boolean>()
     val noInternetConnection = Channel<Throwable>()
 
+    /**
+     * Binds the ViewModel's channels to the BaseActivity's UI handling methods.
+     * This sets up observers for loading, error, failure, unauthorized access, and no internet connection events.
+     *
+     * @param baseActivity The BaseActivity instance to bind to
+     */
     fun bindActivity(baseActivity: BaseActivity) {
         loading.receiveAsFlow().onEach {
             baseActivity.loading(it)
