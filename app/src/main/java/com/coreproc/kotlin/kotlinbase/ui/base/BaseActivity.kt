@@ -161,14 +161,13 @@ abstract class BaseActivity : ComponentActivity() {
         showDefaultErrorDialog(it.getFullMessage())
     }
 
-    open fun unauthorized(boolean: Boolean) {
+    open fun unauthorized() {
         buildDefaultDialog(
             null, getString(R.string.session_expired), getString(R.string.ok),
-            onClickListener = DialogInterface.OnClickListener { _, _ ->
-                showShortToast("Perform your logout at BaseActivity@unauthorized.")
+            onClickListener = { _, _ ->
+                showShortToast("Session expired. Please login again.")
             }
-        )
-            .create().show()
+        ).create().show()
     }
 
 }

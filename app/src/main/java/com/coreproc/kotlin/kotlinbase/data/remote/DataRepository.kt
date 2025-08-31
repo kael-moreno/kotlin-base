@@ -20,14 +20,16 @@ constructor(
         return flow {
             emit(ResponseHandler.Loading(loading = true))
             val response = apiInterface.getSomething()
-
             emit(ResponseHandler.Loading())
-            if (response.isSuccessful) {
-                emit(ResponseHandler.Success(data = response.body()!!))
-            } else {
+
+            if (!response.isSuccessful) {
                 emit(ResponseHandler.Error(ApiError.parseError(response)))
+                return@flow
             }
+
+            emit(ResponseHandler.Success(data = response.body()!!))
         }.catch { ex ->
+            emit(ResponseHandler.Loading())
             if (ex is CancellationException)
                 throw ex
 

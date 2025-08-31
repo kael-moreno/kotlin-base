@@ -17,7 +17,6 @@ abstract class BaseViewModel: ViewModel() {
     val loading = Channel<Boolean>()
     val error = Channel<ErrorBody>()
     val failure = Channel<String>()
-    val unauthorized = Channel<Boolean>()
     val noInternetConnection = Channel<Throwable>()
 
     fun bindActivity(baseActivity: BaseActivity) {
@@ -26,11 +25,11 @@ abstract class BaseViewModel: ViewModel() {
         }.launchIn(baseActivity.lifecycleScope)
 
         error.receiveAsFlow().onEach {
-            baseActivity.error(it)
-        }.launchIn(baseActivity.lifecycleScope)
-
-        unauthorized.receiveAsFlow().onEach {
-            baseActivity.unauthorized(it)
+            if (it.http_code == 401) {
+                baseActivity.unauthorized()
+            } else {
+                baseActivity.error(it)
+            }
         }.launchIn(baseActivity.lifecycleScope)
 
         noInternetConnection.receiveAsFlow().onEach {

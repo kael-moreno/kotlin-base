@@ -6,6 +6,6 @@ import retrofit2.http.GET
 
 interface ApiInterface {
 
-    @GET("random_joke")
+    @GET("random_joke2")
     suspend fun getSomething(): Response<SampleResponse>
 }
