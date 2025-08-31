@@ -24,6 +24,35 @@ constructor(private val apiUseCase: ApiUseCase) : BaseViewModel() {
     fun getSomething() = viewModelScope.launch(Dispatchers.IO) {
         apiUseCase.run("")
             .collectLatest { resource ->
+
+                /**
+                 * If needed to manually handle the response, do it here.
+                 * Make sure to remove the handleResponse extension function below.
+                 * Example:
+                 * when (resource) {
+                 *    is ResponseHandler.Loading -> {
+                 *    loading.send(resource.loading)
+                 *    }
+                 *    is ResponseHandler.Error -> {
+                 *    error.send(resource.errorBody!!)
+                 *    }
+                 *    is ResponseHandler.Failure -> {
+                 *    failure.send(resource.exception ?: Throwable(message = "Unknown error occurred"))
+                 *    }
+                 *    is ResponseHandler.Success -> {
+                 *    loading.send(false)
+                 *    resource.result?.let {
+                 *    successChannel.send(it)
+                 *    }
+                 *    }
+                 *    else -> {
+                 *    // Nothing to do here
+                 *    }
+                 *    }
+                 *    OR
+                 *    just use the handleResponse extension function as shown below.
+                 */
+
                 resource.handleResponse(this@MainViewModel) {
                     successChannel.send(it)
                 }
