@@ -1,9 +1,9 @@
 package com.coreproc.kotlin.kotlinbase.ui.main
 
 import androidx.lifecycle.viewModelScope
-import com.coreproc.kotlin.kotlinbase.data.remote.ResponseHandler
 import com.coreproc.kotlin.kotlinbase.data.remote.model.SampleResponse
 import com.coreproc.kotlin.kotlinbase.data.remote.usecase.ApiUseCase
+import com.coreproc.kotlin.kotlinbase.extensions.handleResponse
 import com.coreproc.kotlin.kotlinbase.ui.base.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -11,7 +11,6 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
-import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -25,16 +24,8 @@ constructor(private val apiUseCase: ApiUseCase) : BaseViewModel() {
     fun getSomething() = viewModelScope.launch(Dispatchers.IO) {
         apiUseCase.run("")
             .collectLatest { resource ->
-                when (resource) {
-                    is ResponseHandler.Loading -> loading.send(resource.loading)
-                    is ResponseHandler.Error -> error.send(resource.errorBody!!)
-                    is ResponseHandler.Failure -> failure.send(resource.exception ?: Throwable(message = "Unknown error occurred"))
-                    is ResponseHandler.Success -> {
-                        loading.send(false)
-                        if (resource.result != null) {
-                            successChannel.send(resource.result)
-                        }
-                    }
+                resource.handleResponse(this@MainViewModel) {
+                    successChannel.send(it)
                 }
             }
     }
