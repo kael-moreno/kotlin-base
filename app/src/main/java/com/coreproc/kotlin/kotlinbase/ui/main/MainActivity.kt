@@ -10,6 +10,7 @@ import com.coreproc.kotlin.kotlinbase.ui.base.BaseActivity
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class MainActivity : BaseActivity() {
@@ -25,6 +26,9 @@ class MainActivity : BaseActivity() {
         applyWindowInsets()
         initObservables()
         initClicks()
+
+        // Example usage of AppPreferences
+        demonstrateAppPreferences()
     }
 
     private fun initObservables() {
@@ -34,12 +38,35 @@ class MainActivity : BaseActivity() {
             showShortToast(it.punchline)
         }.launchIn(lifecycleScope)
 
-        viewModel.getSomething()
+        // viewModel.getSomething()
     }
 
     private fun initClicks() {
         activityMainBinding.retryButton.setOnClickListener {
             viewModel.getSomething()
         }
+    }
+
+    private fun demonstrateAppPreferences() {
+        lifecycleScope.launch {
+            // Save a sample string to preferences
+            appPreferences.saveApiKey("sample_api_key_12345")
+            showShortToast("API Key saved to DataStore!")
+
+            // Retrieve and display the string
+            val savedApiKey = appPreferences.getApiKey()
+            showShortToast("Retrieved API Key: $savedApiKey")
+
+            // Check if API key exists
+            if (appPreferences.hasApiKey()) {
+                showShortToast("User has API Key - logged in!")
+            }
+        }
+
+        // Example of observing changes reactively
+        appPreferences.hasApiKeyFlow().onEach { hasKey ->
+            val status = if (hasKey) "Logged In" else "Logged Out"
+            activityMainBinding.helloWorldTextView.text = "User Status: $status"
+        }.launchIn(lifecycleScope)
     }
 }

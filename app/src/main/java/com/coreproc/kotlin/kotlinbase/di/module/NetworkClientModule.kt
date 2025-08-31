@@ -34,7 +34,10 @@ object NetworkClientModule {
     @SuppressLint("HardwareIds")
     @Singleton
     @Provides
-    internal fun provideHttpClient(logging: HttpLoggingInterceptor): OkHttpClient {
+    internal fun provideHttpClient(
+        logging: HttpLoggingInterceptor,
+        appPreferences: AppPreferences
+    ): OkHttpClient {
         val timeout: Long = 300
 
         val builder = OkHttpClient.Builder()
@@ -61,7 +64,7 @@ object NetworkClientModule {
                         )
                     )
 
-                AppPreferences.getApiKey()?.let { key ->
+                appPreferences.getApiKeySync()?.let { key ->
                     builder.addHeader("Authorization", "Bearer $key")
                 }
 
