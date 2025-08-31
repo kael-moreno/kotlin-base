@@ -1,16 +1,20 @@
 package com.coreproc.kotlin.kotlinbase.ui.main
 
+import androidx.activity.viewModels
+import androidx.lifecycle.lifecycleScope
 import com.coreproc.kotlin.kotlinbase.R
 import com.coreproc.kotlin.kotlinbase.databinding.ActivityMainBinding
 import com.coreproc.kotlin.kotlinbase.extensions.applyWindowInsets
 import com.coreproc.kotlin.kotlinbase.extensions.showShortToast
 import com.coreproc.kotlin.kotlinbase.ui.base.BaseActivity
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 
 @AndroidEntryPoint
 class MainActivity : BaseActivity() {
 
-    private lateinit var viewModel: MainViewModel
+    private val viewModel: MainViewModel by viewModels()
 
     private lateinit var activityMainBinding: ActivityMainBinding
 
@@ -18,17 +22,23 @@ class MainActivity : BaseActivity() {
 
     override fun initialize() {
         applyWindowInsets()
-        viewModel = initViewModel(MainViewModel::class.java)
-        viewModel.success.observe(this) {
-            activityMainBinding.helloWorldTextView.text = it.setup
-            showShortToast(it.punchline) }
-        viewModel.getSomething(this)
-
+        initObservables()
         activityMainBinding = ActivityMainBinding.bind(getChildActivityView())
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        viewModel.success.removeObservers(this)
+    private fun initObservables() {
+        viewModel.bindActivity(this)
+        viewModel.successStateFlow.onEach {
+            loading(it.isLoading)
+            when {
+                it.data != null -> {
+                    activityMainBinding.helloWorldTextView.text = it.data.setup
+                    showShortToast(it.data.punchline)
+                }
+            }
+
+        }.launchIn(lifecycleScope)
+
+        viewModel.getSomething()
     }
 }

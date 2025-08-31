@@ -43,8 +43,6 @@ abstract class BaseActivity : ComponentActivity() {
 
     private var defaultToolbar: Toolbar? = null
 
-    private var listOfViewModels = mutableListOf<BaseViewModel>()
-
     override fun setTitle(titleId: Int) {
         defaultToolbarBinding.defaultToolbar.title = getString(titleId)
     }
@@ -61,14 +59,6 @@ abstract class BaseActivity : ComponentActivity() {
         setContentView(baseActivityBinding.root)
         initUi()
     }
-
-    override fun onDestroy() {
-        listOfViewModels.forEach {
-            it.removeObservers(this)
-        }
-        super.onDestroy()
-    }
-
 
     @SuppressLint("ClickableViewAccessibility")
     fun initUi() {
@@ -88,14 +78,6 @@ abstract class BaseActivity : ComponentActivity() {
     }
 
     protected fun getChildActivityView(): View = viewStubView
-
-    fun <T: BaseViewModel> initViewModel(viewModelClass: Class<T>): T {
-        val viewModel = ViewModelProvider(this)[viewModelClass]
-        viewModel.observeCommonEvent(this)
-        listOfViewModels.add(viewModel)
-        return viewModel
-    }
-
 
     fun hideToolbar() {
         defaultToolbar?.visibility = View.GONE

@@ -11,10 +11,10 @@ import java.net.UnknownHostException
 import java.nio.channels.NotYetConnectedException
 import javax.net.ssl.SSLHandshakeException
 
-fun <T : Any> Response<T>.postErrorBody(baseViewModel: BaseViewModel) {
-    baseViewModel.loading.postValue(false)
+/*fun <T : Any> Response<T>.postErrorBody(baseViewModel: BaseViewModel) {
+    baseViewModel.loading.send(false)
     if (!this.isSuccessful) {
-        baseViewModel.error.postValue(ApiError.parseError(this))
+        baseViewModel.error.send(ApiError.parseError(this))
         return
     }
     baseViewModel.error.postValue(null)
@@ -48,4 +48,4 @@ fun <T : Any> Response<T>.postErrorBody(message: String, baseViewModel: BaseView
 
     val errorBody = ErrorBody(500, "ERROR", "An error occurred", null)
     baseViewModel.error.postValue(errorBody)
-}
+}*/
