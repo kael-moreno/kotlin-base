@@ -24,9 +24,9 @@ class AppPreferences @Inject constructor(
     @ApplicationContext private val context: Context,
     private val keystoreManager: KeystoreManager
 ) {
-    private const val API_KEY = stringPreferencesKey("api_key")
-    private const val PREF_NAME = "app_preferences_sync"
-    private const val API_KEY_ALIAS = "AppPreferencesApiKey"
+    private val API_KEY = stringPreferencesKey("api_key")
+    private val PREF_NAME = "app_preferences_sync"
+    private val API_KEY_ALIAS = "AppPreferencesApiKey"
 
     // Synchronous SharedPreferences for interceptor use (legacy support)
     private val syncPreferences: SharedPreferences by lazy {
