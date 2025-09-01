@@ -38,8 +38,13 @@ abstract class BaseActivity : FragmentActivity() {
     lateinit var appPreferences: AppPreferences
 
     private var baseActivityBinding: ActivityBaseLayoutBinding? = null
+    private val _baseActivityBinding = baseActivityBinding!!
 
     private var defaultToolbarBinding: DefaultToolbarBinding? = null
+    private val _defaultToolbarBinding = defaultToolbarBinding!!
+
+    private var defaultToolbar: Toolbar? = null
+    private var _defaultToolbar = defaultToolbar!!
 
     protected abstract fun getLayoutResource(): Int
 
@@ -47,54 +52,54 @@ abstract class BaseActivity : FragmentActivity() {
 
     protected lateinit var context: Context
 
-    private lateinit var viewStubView: View
+    private var viewStubView: View? = null
+    private val _viewStubView = viewStubView!!
 
-    private var defaultToolbar: Toolbar? = null
 
     override fun setTitle(titleId: Int) {
-        defaultToolbarBinding?.defaultToolbar?.title = getString(titleId)
+        _defaultToolbarBinding.defaultToolbar.title = getString(titleId)
     }
 
     override fun setTitle(title: CharSequence) {
-        defaultToolbarBinding?.defaultToolbar?.title = title
+        _defaultToolbarBinding.defaultToolbar.title = title
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         context = this
         baseActivityBinding = ActivityBaseLayoutBinding.inflate(layoutInflater)
-        defaultToolbarBinding = baseActivityBinding?.toolbarLayout
-        setContentView(baseActivityBinding?.root)
+        defaultToolbarBinding = _baseActivityBinding.toolbarLayout
+        setContentView(_baseActivityBinding.root)
         initUi()
     }
 
     @SuppressLint("ClickableViewAccessibility")
     fun initUi() {
-        defaultToolbar = defaultToolbarBinding?.defaultToolbar
-        baseActivityBinding?.loadingDialogRelativeLayout?.setOnTouchListener { _, _ -> true }
+        defaultToolbar = _defaultToolbarBinding.defaultToolbar
+        _baseActivityBinding.loadingDialogRelativeLayout.setOnTouchListener { _, _ -> true }
 
         initViewStub()
     }
 
     private fun initViewStub() {
-        baseActivityBinding?.baseViewStub?.layoutResource = getLayoutResource()
-        baseActivityBinding?.baseViewStub?.setOnInflateListener { _, inflated ->
+        _baseActivityBinding.baseViewStub.layoutResource = getLayoutResource()
+        _baseActivityBinding.baseViewStub.setOnInflateListener { _, inflated ->
             viewStubView = inflated
             initialize()
         }
-        baseActivityBinding?.baseViewStub?.inflate()
+        _baseActivityBinding.baseViewStub.inflate()
     }
 
-    protected fun getChildActivityView(): View = viewStubView
+    protected fun getChildActivityView(): View = _viewStubView
 
     fun hideToolbar() {
-        defaultToolbar?.isVisible = false
+        _defaultToolbar.isVisible = false
     }
 
     fun setToolbar(toolbar: Toolbar) {
         hideToolbar()
-        defaultToolbar = toolbar
-        defaultToolbar?.isVisible = true
+        _defaultToolbar = toolbar
+        _defaultToolbar.isVisible = true
     }
 
     fun initDefaultRecyclerView(recyclerView: RecyclerView, adapter: RecyclerView.Adapter<*>) {
@@ -111,15 +116,13 @@ abstract class BaseActivity : FragmentActivity() {
         recyclerView.adapter = adapter
     }
 
-
-
     open fun noInternetConnection(throwable: Throwable) {
         throwable.printStackTrace()
         showShortToast(getString(R.string.no_internet_connection))
     }
 
     open fun loading(it: Boolean) {
-        baseActivityBinding?.loadingDialogRelativeLayout?.setVisible(it)
+        _baseActivityBinding.loadingDialogRelativeLayout.setVisible(it)
     }
 
     open fun error(it: ErrorBody) {
@@ -138,6 +141,8 @@ abstract class BaseActivity : FragmentActivity() {
         // Clear view binding references to prevent memory leaks
         baseActivityBinding = null
         defaultToolbarBinding = null
+        defaultToolbar = null
+        viewStubView = null
     }
 
 }
