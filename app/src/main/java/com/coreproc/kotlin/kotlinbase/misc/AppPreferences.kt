@@ -24,61 +24,61 @@ class AppPreferences @Inject constructor(
     @ApplicationContext private val context: Context,
     private val keystoreManager: KeystoreManager
 ) {
-    private val API_KEY = stringPreferencesKey("api_key")
-    private val PREF_NAME = "app_preferences_sync"
-    private val API_KEY_ALIAS = "AppPreferencesApiKey"
+    private val apiKeyPreferences = stringPreferencesKey("api_key")
+    private val appPreferencesSync = "app_preferences_sync"
+    private val keystoreAlias = context.packageName
 
     // Synchronous SharedPreferences for interceptor use (legacy support)
     private val syncPreferences: SharedPreferences by lazy {
-        context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
+        context.getSharedPreferences(appPreferencesSync, Context.MODE_PRIVATE)
     }
 
     init {
         // Generate the encryption key for API keys
-        keystoreManager.generateSecretKey(API_KEY_ALIAS)
+        keystoreManager.generateSecretKey(keystoreAlias)
     }
 
     // Modern DataStore methods for general app use (with encryption)
     suspend fun saveApiKey(key: String) {
-        val encryptedKey = keystoreManager.encryptData(key, API_KEY_ALIAS)
+        val encryptedKey = keystoreManager.encryptData(key, keystoreAlias)
         if (encryptedKey != null) {
             // Save encrypted data to DataStore
             context.dataStore.edit { preferences ->
-                preferences[API_KEY] = encryptedKey
+                preferences[apiKeyPreferences] = encryptedKey
             }
             // Save encrypted data to SharedPreferences for interceptor compatibility
             syncPreferences.edit {
-                putString(API_KEY.name, encryptedKey)
+                putString(apiKeyPreferences.name, encryptedKey)
             }
         }
     }
 
     suspend fun getApiKey(): String? {
         val encryptedKey = context.dataStore.data.map { preferences ->
-            preferences[API_KEY]
+            preferences[apiKeyPreferences]
         }.first()
 
-        return encryptedKey?.let { keystoreManager.decryptData(it, API_KEY_ALIAS) }
+        return encryptedKey?.let { keystoreManager.decryptData(it, keystoreAlias) }
     }
 
     // Synchronous method for interceptor use (with decryption)
     fun getApiKeySync(): String? {
-        val encryptedKey = syncPreferences.getString(API_KEY.name, null)
-        return encryptedKey?.let { keystoreManager.decryptData(it, API_KEY_ALIAS) }
+        val encryptedKey = syncPreferences.getString(apiKeyPreferences.name, null)
+        return encryptedKey?.let { keystoreManager.decryptData(it, keystoreAlias) }
     }
 
     fun getApiKeyFlow(): Flow<String?> {
         return context.dataStore.data.map { preferences ->
-            preferences[API_KEY]?.let { keystoreManager.decryptData(it, API_KEY_ALIAS) }
+            preferences[apiKeyPreferences]?.let { keystoreManager.decryptData(it, keystoreAlias) }
         }
     }
 
     suspend fun clearApiKey() {
         context.dataStore.edit { preferences ->
-            preferences.remove(API_KEY)
+            preferences.remove(apiKeyPreferences)
         }
         syncPreferences.edit {
-            remove(API_KEY.name)
+            remove(apiKeyPreferences.name)
         }
     }
 
@@ -88,8 +88,8 @@ class AppPreferences @Inject constructor(
 
     fun hasApiKeyFlow(): Flow<Boolean> {
         return context.dataStore.data.map { preferences ->
-            val encryptedKey = preferences[API_KEY]
-            !encryptedKey.isNullOrEmpty() && !keystoreManager.decryptData(encryptedKey, API_KEY_ALIAS).isNullOrEmpty()
+            val encryptedKey = preferences[apiKeyPreferences]
+            !encryptedKey.isNullOrEmpty() && !keystoreManager.decryptData(encryptedKey, keystoreAlias).isNullOrEmpty()
         }
     }
 
