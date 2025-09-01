@@ -28,7 +28,6 @@ class MainActivity : BaseActivity() {
         initClicks()
 
         // Example usage of AppPreferences
-        demonstrateAppPreferences()
     }
 
     private fun initObservables() {
@@ -36,9 +35,20 @@ class MainActivity : BaseActivity() {
         viewModel.successFlow.onEach {
             activityMainBinding.helloWorldTextView.text = it.setup
             showShortToast(it.punchline)
+
+            demonstrateAppPreferences()
         }.launchIn(lifecycleScope)
 
-        // viewModel.getSomething()
+        // Example of observing changes reactively
+        appPreferences.hasApiKeyFlow().onEach { hasKey ->
+            var testString = activityMainBinding.helloWorldTextView.text.toString()
+
+            val status = if (hasKey) "Logged In" else "Logged Out"
+            testString += "\nUser Status: $status"
+            activityMainBinding.helloWorldTextView.text = testString
+        }.launchIn(lifecycleScope)
+
+        viewModel.getSomething()
     }
 
     private fun initClicks() {
@@ -48,25 +58,23 @@ class MainActivity : BaseActivity() {
     }
 
     private fun demonstrateAppPreferences() {
+        var testString = activityMainBinding.helloWorldTextView.text.toString()
         lifecycleScope.launch {
             // Save a sample string to preferences
             appPreferences.saveApiKey("sample_api_key_12345")
-            showShortToast("API Key saved to DataStore!")
+            testString += "\nAPI Key saved to DataStore!"
 
             // Retrieve and display the string
             val savedApiKey = appPreferences.getApiKey()
-            showShortToast("Retrieved API Key: $savedApiKey")
+            testString += "\nRetrieved API Key: $savedApiKey"
 
             // Check if API key exists
             if (appPreferences.hasApiKey()) {
-                showShortToast("User has API Key - logged in!")
+                testString += "\nUser has API Key - logged in!"
             }
+
+            activityMainBinding.helloWorldTextView.text = testString
         }
 
-        // Example of observing changes reactively
-        appPreferences.hasApiKeyFlow().onEach { hasKey ->
-            val status = if (hasKey) "Logged In" else "Logged Out"
-            activityMainBinding.helloWorldTextView.text = "User Status: $status"
-        }.launchIn(lifecycleScope)
     }
 }
