@@ -9,6 +9,7 @@ import android.view.View
 import androidx.activity.ComponentActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.isVisible
+import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -28,7 +29,7 @@ import timber.log.Timber
 import javax.inject.Inject
 
 @AndroidEntryPoint
-abstract class BaseActivity : ComponentActivity() {
+abstract class BaseActivity : FragmentActivity() {
 
     @Inject
     lateinit var deviceUtilities: DeviceUtilities
@@ -36,9 +37,9 @@ abstract class BaseActivity : ComponentActivity() {
     @Inject
     lateinit var appPreferences: AppPreferences
 
-    private lateinit var baseActivityBinding: ActivityBaseLayoutBinding
+    private var baseActivityBinding: ActivityBaseLayoutBinding? = null
 
-    private lateinit var defaultToolbarBinding: DefaultToolbarBinding
+    private var defaultToolbarBinding: DefaultToolbarBinding? = null
 
     protected abstract fun getLayoutResource(): Int
 
@@ -51,37 +52,37 @@ abstract class BaseActivity : ComponentActivity() {
     private var defaultToolbar: Toolbar? = null
 
     override fun setTitle(titleId: Int) {
-        defaultToolbarBinding.defaultToolbar.title = getString(titleId)
+        defaultToolbarBinding?.defaultToolbar?.title = getString(titleId)
     }
 
     override fun setTitle(title: CharSequence) {
-        defaultToolbarBinding.defaultToolbar.title = title
+        defaultToolbarBinding?.defaultToolbar?.title = title
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         context = this
         baseActivityBinding = ActivityBaseLayoutBinding.inflate(layoutInflater)
-        defaultToolbarBinding = baseActivityBinding.toolbarLayout
-        setContentView(baseActivityBinding.root)
+        defaultToolbarBinding = baseActivityBinding?.toolbarLayout
+        setContentView(baseActivityBinding?.root)
         initUi()
     }
 
     @SuppressLint("ClickableViewAccessibility")
     fun initUi() {
-        defaultToolbar = defaultToolbarBinding.defaultToolbar
-        baseActivityBinding.loadingDialogRelativeLayout.setOnTouchListener { _, _ -> true }
+        defaultToolbar = defaultToolbarBinding?.defaultToolbar
+        baseActivityBinding?.loadingDialogRelativeLayout?.setOnTouchListener { _, _ -> true }
 
         initViewStub()
     }
 
     private fun initViewStub() {
-        baseActivityBinding.baseViewStub.layoutResource = getLayoutResource()
-        baseActivityBinding.baseViewStub.setOnInflateListener { _, inflated ->
+        baseActivityBinding?.baseViewStub?.layoutResource = getLayoutResource()
+        baseActivityBinding?.baseViewStub?.setOnInflateListener { _, inflated ->
             viewStubView = inflated
             initialize()
         }
-        baseActivityBinding.baseViewStub.inflate()
+        baseActivityBinding?.baseViewStub?.inflate()
     }
 
     protected fun getChildActivityView(): View = viewStubView
@@ -118,7 +119,7 @@ abstract class BaseActivity : ComponentActivity() {
     }
 
     open fun loading(it: Boolean) {
-        baseActivityBinding.loadingDialogRelativeLayout.setVisible(it)
+        baseActivityBinding?.loadingDialogRelativeLayout?.setVisible(it)
     }
 
     open fun error(it: ErrorBody) {
@@ -130,6 +131,13 @@ abstract class BaseActivity : ComponentActivity() {
             getString(R.string.please_login_again)) {
             MainActivity.startActivity(this)
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        // Clear view binding references to prevent memory leaks
+        baseActivityBinding = null
+        defaultToolbarBinding = null
     }
 
 }
