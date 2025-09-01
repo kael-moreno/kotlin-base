@@ -34,7 +34,7 @@ class MainActivity : BaseActivity() {
         viewModel.bindActivity(this)
         viewModel.successFlow.onEach {
             activityMainBinding.helloWorldTextView.text = it.setup
-            showShortToast(it.punchline)
+            showDefaultDialog(getString(R.string.success), it.punchline)
 
             demonstrateAppPreferences()
         }.launchIn(lifecycleScope)

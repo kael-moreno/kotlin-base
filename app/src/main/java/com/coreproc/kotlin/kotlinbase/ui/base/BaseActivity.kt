@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.activity.ComponentActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -69,13 +70,13 @@ abstract class BaseActivity : ComponentActivity() {
         baseActivityBinding.loadingDialogRelativeLayout.setOnTouchListener { _, _ -> true }
 
         initViewStub()
-        initialize()
     }
 
     private fun initViewStub() {
         baseActivityBinding.baseViewStub.layoutResource = getLayoutResource()
         baseActivityBinding.baseViewStub.setOnInflateListener { _, inflated ->
             viewStubView = inflated
+            initialize()
         }
         baseActivityBinding.baseViewStub.inflate()
     }
@@ -83,34 +84,13 @@ abstract class BaseActivity : ComponentActivity() {
     protected fun getChildActivityView(): View = viewStubView
 
     fun hideToolbar() {
-        defaultToolbar?.visibility = View.GONE
+        defaultToolbar?.isVisible = false
     }
 
     fun setToolbar(toolbar: Toolbar) {
         hideToolbar()
         defaultToolbar = toolbar
-        toolbar.visibility = View.VISIBLE
-    }
-
-    fun showDefaultDialog(title: String, message: String) {
-        val builder = AlertDialog.Builder(context)
-        builder.setTitle(title)
-        builder.setMessage(message)
-        builder.setCancelable(false)
-        builder.setPositiveButton(getString(R.string.ok), null)
-        builder.create().show()
-    }
-
-    fun showDefaultDialog(
-        title: String, message: String,
-        onClickListener: DialogInterface.OnClickListener
-    ) {
-        val builder = AlertDialog.Builder(context)
-        builder.setTitle(title)
-        builder.setMessage(message)
-        builder.setCancelable(false)
-        builder.setPositiveButton(getString(R.string.ok), onClickListener)
-        builder.create().show()
+        defaultToolbar?.isVisible = true
     }
 
     fun initDefaultRecyclerView(recyclerView: RecyclerView, adapter: RecyclerView.Adapter<*>) {
@@ -127,27 +107,67 @@ abstract class BaseActivity : ComponentActivity() {
         recyclerView.adapter = adapter
     }
 
+    fun showDefaultDialog(title: String, message: String) {
+        buildDefaultDialog(
+            title = title,
+            message = message,
+            okButton = getString(R.string.ok),
+            onOkClick = { }
+        ).create().show()
+    }
+
+    fun showDefaultDialog(
+        title: String, message: String,
+        onOkClick: () -> Unit
+    ) {
+        buildDefaultDialog(
+            title = title,
+            message = message,
+            okButton = getString(R.string.ok),
+            onOkClick = onOkClick
+        ).create().show()
+    }
+
     open fun showDefaultErrorDialog(message: String) {
-        AlertDialog.Builder(context)
-            .setTitle(getString(R.string.error))
-            .setMessage(message)
-            .setCancelable(false)
-            .setPositiveButton(getString(R.string.ok), null)
-            .create().show()
+        buildDefaultDialog(
+            title = getString(R.string.error),
+            message = message,
+            okButton = getString(R.string.ok),
+            onOkClick = { /* Do nothing */ }
+        ).create().show()
     }
 
     open fun buildDefaultDialog(
         title: String?, message: String?,
         okButton: String,
-        onClickListener: DialogInterface.OnClickListener?
+        onOkClick: () -> Unit,
+        cancelButton: String? = null,
+        onCancelClick: (() -> Unit)? = null
     ): AlertDialog.Builder {
         val builder = AlertDialog.Builder(context)
-
-        if (title != null && title.isNotEmpty()) builder.setTitle(title)
-        if (message != null && message.isNotEmpty()) builder.setMessage(message)
-
         builder.setCancelable(false)
-        builder.setPositiveButton(okButton, onClickListener)
+
+        if (!title.isNullOrEmpty()) builder.setTitle(title)
+        if (!message.isNullOrEmpty()) builder.setMessage(message)
+
+        builder.setPositiveButton(okButton) { dialog, _ ->
+            try {
+                onOkClick()
+                dialog.dismiss()
+            } catch (e: Exception) {
+                Timber.e(e)
+            }
+        }
+        if (!cancelButton.isNullOrEmpty() && onCancelClick != null) {
+            builder.setNegativeButton(cancelButton) { dialog, _ ->
+                try {
+                    onCancelClick()
+                    dialog.dismiss()
+                } catch (e: Exception) {
+                    Timber.e(e)
+                }
+            }
+        }
         return builder
     }
 
@@ -166,8 +186,9 @@ abstract class BaseActivity : ComponentActivity() {
 
     open fun unauthorized() {
         buildDefaultDialog(
-            null, getString(R.string.session_expired), getString(R.string.ok),
-            onClickListener = { _, _ ->
+            null, getString(R.string.session_expired),
+            getString(R.string.ok),
+            onOkClick = {
                 showShortToast("Session expired. Please login again.")
             }
         ).create().show()
