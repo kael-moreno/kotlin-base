@@ -17,8 +17,11 @@ import com.coreproc.kotlin.kotlinbase.data.remote.ErrorBody
 import com.coreproc.kotlin.kotlinbase.databinding.ActivityBaseLayoutBinding
 import com.coreproc.kotlin.kotlinbase.databinding.DefaultToolbarBinding
 import com.coreproc.kotlin.kotlinbase.extensions.setVisible
+import com.coreproc.kotlin.kotlinbase.extensions.showDefaultDialog
+import com.coreproc.kotlin.kotlinbase.extensions.showDefaultErrorDialog
 import com.coreproc.kotlin.kotlinbase.extensions.showShortToast
 import com.coreproc.kotlin.kotlinbase.misc.AppPreferences
+import com.coreproc.kotlin.kotlinbase.ui.main.MainActivity
 import com.coreproc.kotlin.kotlinbase.utils.DeviceUtilities
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
@@ -107,69 +110,7 @@ abstract class BaseActivity : ComponentActivity() {
         recyclerView.adapter = adapter
     }
 
-    fun showDefaultDialog(title: String, message: String) {
-        buildDefaultDialog(
-            title = title,
-            message = message,
-            okButton = getString(R.string.ok),
-            onOkClick = { }
-        ).create().show()
-    }
 
-    fun showDefaultDialog(
-        title: String, message: String,
-        onOkClick: () -> Unit
-    ) {
-        buildDefaultDialog(
-            title = title,
-            message = message,
-            okButton = getString(R.string.ok),
-            onOkClick = onOkClick
-        ).create().show()
-    }
-
-    open fun showDefaultErrorDialog(message: String) {
-        buildDefaultDialog(
-            title = getString(R.string.error),
-            message = message,
-            okButton = getString(R.string.ok),
-            onOkClick = { /* Do nothing */ }
-        ).create().show()
-    }
-
-    open fun buildDefaultDialog(
-        title: String?, message: String?,
-        okButton: String,
-        onOkClick: () -> Unit,
-        cancelButton: String? = null,
-        onCancelClick: (() -> Unit)? = null
-    ): AlertDialog.Builder {
-        val builder = AlertDialog.Builder(context)
-        builder.setCancelable(false)
-
-        if (!title.isNullOrEmpty()) builder.setTitle(title)
-        if (!message.isNullOrEmpty()) builder.setMessage(message)
-
-        builder.setPositiveButton(okButton) { dialog, _ ->
-            try {
-                onOkClick()
-                dialog.dismiss()
-            } catch (e: Exception) {
-                Timber.e(e)
-            }
-        }
-        if (!cancelButton.isNullOrEmpty() && onCancelClick != null) {
-            builder.setNegativeButton(cancelButton) { dialog, _ ->
-                try {
-                    onCancelClick()
-                    dialog.dismiss()
-                } catch (e: Exception) {
-                    Timber.e(e)
-                }
-            }
-        }
-        return builder
-    }
 
     open fun noInternetConnection(throwable: Throwable) {
         throwable.printStackTrace()
@@ -185,13 +126,10 @@ abstract class BaseActivity : ComponentActivity() {
     }
 
     open fun unauthorized() {
-        buildDefaultDialog(
-            null, getString(R.string.session_expired),
-            getString(R.string.ok),
-            onOkClick = {
-                showShortToast("Session expired. Please login again.")
-            }
-        ).create().show()
+        showDefaultDialog(getString(R.string.session_expired),
+            getString(R.string.please_login_again)) {
+            MainActivity.startActivity(this)
+        }
     }
 
 }

@@ -1,10 +1,15 @@
 package com.coreproc.kotlin.kotlinbase.ui.main
 
+import android.app.Activity
+import android.content.Context
+import android.content.Intent
 import androidx.activity.viewModels
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import com.coreproc.kotlin.kotlinbase.R
 import com.coreproc.kotlin.kotlinbase.databinding.ActivityMainBinding
 import com.coreproc.kotlin.kotlinbase.extensions.applyWindowInsets
+import com.coreproc.kotlin.kotlinbase.extensions.showDefaultDialog
 import com.coreproc.kotlin.kotlinbase.extensions.showShortToast
 import com.coreproc.kotlin.kotlinbase.ui.base.BaseActivity
 import dagger.hilt.android.AndroidEntryPoint
@@ -14,6 +19,13 @@ import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class MainActivity : BaseActivity() {
+
+    companion object {
+        fun startActivity(context: Context) {
+            context.startActivity(Intent(context, MainActivity::class.java))
+            (context as Activity).finishAffinity()
+        }
+    }
 
     private val viewModel: MainViewModel by viewModels()
 

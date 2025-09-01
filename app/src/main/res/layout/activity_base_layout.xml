@@ -26,7 +26,7 @@
             android:id="@+id/loading_dialog_relative_layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="#bd111633"
+            android:background="#BD3E3E3E"
             android:clickable="true"
             android:focusable="true"
             android:focusableInTouchMode="true"
