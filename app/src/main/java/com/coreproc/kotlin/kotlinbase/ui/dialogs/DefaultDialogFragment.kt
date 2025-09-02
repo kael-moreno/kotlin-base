@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
 import androidx.core.view.isVisible
 import androidx.fragment.app.DialogFragment
 import com.coreproc.kotlin.kotlinbase.databinding.DialogDefaultBinding
@@ -35,6 +36,20 @@ class DefaultDialogFragment : DialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupDialog()
+    }
+
+    override fun onStart() {
+        super.onStart()
+        setupDynamicWidth()
+    }
+
+    private fun setupDynamicWidth() {
+        dialog?.window?.let { window ->
+            window.setLayout(
+                WindowManager.LayoutParams.MATCH_PARENT,
+                WindowManager.LayoutParams.WRAP_CONTENT
+            )
+        }
     }
 
     private fun setupDialog() {

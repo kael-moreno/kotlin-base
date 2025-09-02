@@ -42,10 +42,6 @@
     <!--<dimen name="material_text_size_caption_dp">12dp</dimen>-->
     <!--<dimen name="material_text_size_button_dp">14dp</dimen>-->
 
-    <!-- Dialog dimensions for dynamic width based on screen size -->
-    <dimen name="dialog_horizontal_margin">32dp</dimen>
-    <dimen name="dialog_min_width">280dp</dimen>
-    <dimen name="dialog_max_width">400dp</dimen>
 
     <!-- alpha values-->
     <item name="material_light_primary_alpha" format="float" type="dimen">0.87</item>
