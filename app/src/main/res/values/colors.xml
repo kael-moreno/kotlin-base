@@ -1,39 +1,51 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <resources>
-    <color name="colorPrimary">#111633</color>
-    <color name="colorPrimaryDark">#0D1127</color>
-    <color name="colorPrimaryLight">#1C2453</color>
-    <color name="textAreaDark">#0B0E22</color>
-    <color name="colorAccent">#ffffff</color>
-    <color name="navigationBottomYellow">#d5a22a</color>
-    <color name="primaryYellow">#EBBE2F</color>
-    <color name="primaryDarkYellow">#997d25</color>
-    <color name="dimgray">#707070</color>
-    <color name="black">#000000</color>
-    <color name="pale_black">#77000000</color>
-    <color name="pale_black_overlay">#91000000</color>
-    <color name="white">#ffffff</color>
-    <color name="dark_gray">#2c2c2c</color>
+    <!-- Minimalist Color System - Light Mode (GitHub-inspired) -->
+
+    <!-- Primary colors - Dark grays for minimalist look -->
+    <color name="md_theme_primary">#24292F</color>
+    <color name="md_theme_onPrimary">#FFFFFF</color>
+    <color name="md_theme_primaryContainer">#F6F8FA</color>
+    <color name="md_theme_onPrimaryContainer">#24292F</color>
+
+    <!-- Secondary colors - Medium grays -->
+    <color name="md_theme_secondary">#656D76</color>
+    <color name="md_theme_onSecondary">#FFFFFF</color>
+    <color name="md_theme_secondaryContainer">#EAEEF2</color>
+    <color name="md_theme_onSecondaryContainer">#24292F</color>
+
+    <!-- Surface colors - Pure whites and light grays -->
+    <color name="md_theme_surface">#FFFFFF</color>
+    <color name="md_theme_onSurface">#24292F</color>
+    <color name="md_theme_surfaceVariant">#F6F8FA</color>
+    <color name="md_theme_onSurfaceVariant">#656D76</color>
+
+    <!-- Background colors - Clean whites -->
+    <color name="md_theme_background">#FFFFFF</color>
+    <color name="md_theme_onBackground">#24292F</color>
+
+    <!-- Error colors - Minimalist red -->
+    <color name="md_theme_error">#D1242F</color>
+    <color name="md_theme_onError">#FFFFFF</color>
+    <color name="md_theme_errorContainer">#FFEBE9</color>
+    <color name="md_theme_onErrorContainer">#24292F</color>
+
+    <!-- Outline colors - Light grays -->
+    <color name="md_theme_outline">#D1D9E0</color>
+    <color name="md_theme_outlineVariant">#EAEEF2</color>
+
+    <!-- Legacy colors for backward compatibility -->
+    <color name="colorPrimary">@color/md_theme_primary</color>
+    <color name="colorPrimaryDark">@color/md_theme_primaryContainer</color>
+    <color name="colorAccent">@color/md_theme_secondary</color>
+    <color name="textAreaDark">@color/md_theme_onBackground</color>
+
+    <!-- App-specific colors that don't change with theme -->
     <color name="transparent">#00000000</color>
-    <color name="divider">#7F7F7F</color>
-    <color name="message_dialog">#7F7F7F</color>
+    <color name="divider">@color/md_theme_outline</color>
+    <color name="message_dialog">@color/md_theme_outline</color>
 
-    <color name="navigationTextIconSelected">#888B99</color>
-    <color name="navigationItemSelected">#44485E</color>
-    <color name="subtitleTextColor">#C8C9D0</color>
-
-    <color name="unselectedTextColor">#707384</color>
-
-    <color name="bottomNavigationTextIconSelected">#F7E5AC</color>
-
-    <color name="primaryFacebook">#4267B2</color>
-    <color name="primaryDarkFacebook">#314d86</color>
-    <color name="primaryGoogle">#E34033</color>
-    <color name="primaryDarkGoogle">#9f2e25</color>
-    <color name="primaryLinkedin">#1177B0</color>
-    <color name="primaryDarkLinkedin">#0c547c</color>
-
-    <!--reds-->
+    <!-- Material Design color palette (keeping your existing ones) -->
     <color name="md_red_50">#FFEBEE</color>
     <color name="md_red_100">#FFCDD2</color>
     <color name="md_red_200">#EF9A9A</color>
@@ -49,7 +61,6 @@
     <color name="md_red_A400">#FF1744</color>
     <color name="md_red_A700">#D50000</color>
 
-    <!-- pinks -->
     <color name="md_pink_50">#FCE4EC</color>
     <color name="md_pink_100">#F8BBD0</color>
     <color name="md_pink_200">#F48FB1</color>
@@ -328,4 +339,3 @@
     <color name="md_blue_grey_900">#263238</color>
 
 </resources>
-

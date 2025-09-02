@@ -6,10 +6,10 @@ import android.content.Context
 import android.content.DialogInterface
 import android.os.Bundle
 import android.view.View
-import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.AppCompatImageView
+import androidx.activity.ComponentActivity
 import androidx.appcompat.widget.Toolbar
-import androidx.lifecycle.ViewModelProvider
+import androidx.core.view.isVisible
+import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -17,21 +17,36 @@ import com.coreproc.kotlin.kotlinbase.R
 import com.coreproc.kotlin.kotlinbase.data.remote.ErrorBody
 import com.coreproc.kotlin.kotlinbase.databinding.ActivityBaseLayoutBinding
 import com.coreproc.kotlin.kotlinbase.databinding.DefaultToolbarBinding
+import com.coreproc.kotlin.kotlinbase.extensions.applyWindowInsets
+import com.coreproc.kotlin.kotlinbase.extensions.hideKeyboard
 import com.coreproc.kotlin.kotlinbase.extensions.setVisible
+import com.coreproc.kotlin.kotlinbase.extensions.showDefaultDialog
+import com.coreproc.kotlin.kotlinbase.extensions.showDefaultErrorDialog
 import com.coreproc.kotlin.kotlinbase.extensions.showShortToast
+import com.coreproc.kotlin.kotlinbase.misc.AppPreferences
+import com.coreproc.kotlin.kotlinbase.ui.main.MainActivity
 import com.coreproc.kotlin.kotlinbase.utils.DeviceUtilities
 import dagger.hilt.android.AndroidEntryPoint
+import timber.log.Timber
 import javax.inject.Inject
 
 @AndroidEntryPoint
-abstract class BaseActivity : AppCompatActivity() {
+abstract class BaseActivity : FragmentActivity() {
 
     @Inject
     lateinit var deviceUtilities: DeviceUtilities
 
-    private lateinit var baseActivityBinding: ActivityBaseLayoutBinding
+    @Inject
+    lateinit var appPreferences: AppPreferences
 
-    private lateinit var defaultToolbarBinding: DefaultToolbarBinding
+    private var _baseActivityBinding: ActivityBaseLayoutBinding? = null
+    private val baseActivityBinding get() = _baseActivityBinding!!
+
+    private var _defaultToolbarBinding: DefaultToolbarBinding? = null
+    private val defaultToolbarBinding get() = _defaultToolbarBinding!!
+
+    private var _defaultToolbar: Toolbar? = null
+    private val defaultToolbar get() = _defaultToolbar!!
 
     protected abstract fun getLayoutResource(): Int
 
@@ -39,114 +54,54 @@ abstract class BaseActivity : AppCompatActivity() {
 
     protected lateinit var context: Context
 
-    private lateinit var viewStubView: View
+    private var _viewStubView: View? = null
+    private val viewStubView get() = _viewStubView!!
 
-    private var defaultToolbar: Toolbar? = null
-
-    private var listOfViewModels = mutableListOf<BaseViewModel>()
 
     override fun setTitle(titleId: Int) {
-        defaultToolbarBinding.toolbarTitleTextView.setText(titleId)
-        supportActionBar!!.title = ""
+        defaultToolbarBinding.defaultToolbar.title = getString(titleId)
     }
 
     override fun setTitle(title: CharSequence) {
-        defaultToolbarBinding.toolbarTitleTextView.text = title
-        supportActionBar!!.title = ""
+        defaultToolbarBinding.defaultToolbar.title = title
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         context = this
-        baseActivityBinding = ActivityBaseLayoutBinding.inflate(layoutInflater)
-        defaultToolbarBinding = baseActivityBinding.toolbarLayout
+        _baseActivityBinding = ActivityBaseLayoutBinding.inflate(layoutInflater)
+        _defaultToolbarBinding = baseActivityBinding.toolbarLayout
         setContentView(baseActivityBinding.root)
         initUi()
     }
 
-    override fun onDestroy() {
-        listOfViewModels.forEach {
-            it.removeObservers(this)
-        }
-        super.onDestroy()
-    }
-
-
     @SuppressLint("ClickableViewAccessibility")
     fun initUi() {
-        defaultToolbar = defaultToolbarBinding.defaultToolbar
-        setSupportActionBar(defaultToolbar)
-        defaultToolbarBinding.toolbarTitleTextView.text = supportActionBar?.title
-        setTitle(title)
+        _defaultToolbar = defaultToolbarBinding.defaultToolbar
         baseActivityBinding.loadingDialogRelativeLayout.setOnTouchListener { _, _ -> true }
-
+        applyWindowInsets()
         initViewStub()
-        initialize()
     }
 
     private fun initViewStub() {
         baseActivityBinding.baseViewStub.layoutResource = getLayoutResource()
         baseActivityBinding.baseViewStub.setOnInflateListener { _, inflated ->
-            viewStubView = inflated
+            _viewStubView = inflated
+            initialize()
         }
         baseActivityBinding.baseViewStub.inflate()
     }
 
     protected fun getChildActivityView(): View = viewStubView
 
-    fun <T: BaseViewModel> initViewModel(viewModelClass: Class<T>): T {
-        val viewModel = ViewModelProvider(this)[viewModelClass]
-        viewModel.observeCommonEvent(this)
-        listOfViewModels.add(viewModel)
-        return viewModel
-    }
-
-
     fun hideToolbar() {
-        if (defaultToolbar != null)
-            defaultToolbarBinding.parentToolbarRelativeLayout.visibility = View.GONE
+        defaultToolbar.isVisible = false
     }
 
     fun setToolbar(toolbar: Toolbar) {
         hideToolbar()
-        defaultToolbar = toolbar
-        setSupportActionBar(toolbar)
-        toolbar.visibility = View.VISIBLE
-    }
-
-    fun setCustomToolbarMenuItem(resourceId: Int, onClickListener: View.OnClickListener) {
-        defaultToolbarBinding.rightImageView.setImageResource(resourceId)
-        defaultToolbarBinding.rightImageView.setOnClickListener(onClickListener)
-        defaultToolbarBinding.rightImageView.visibility = View.VISIBLE
-    }
-
-    fun setCustomToolbarMenuItemVisibility(visibility: Int) {
-        defaultToolbarBinding.rightImageView.visibility = visibility
-    }
-
-    fun getCustomToolbarMenuItem(): AppCompatImageView {
-        return defaultToolbarBinding.rightImageView
-    }
-
-    fun showDefaultDialog(title: String, message: String) {
-        val builder = AlertDialog.Builder(context)
-        builder.setTitle(title)
-        builder.setMessage(message)
-        builder.setCancelable(false)
-        builder.setPositiveButton(getString(R.string.ok), null)
-        builder.create().show()
-    }
-
-    fun showDefaultDialog(
-        title: String, message: String,
-        onClickListener: DialogInterface.OnClickListener
-    ) {
-        val builder = AlertDialog.Builder(context)
-        builder.setTitle(title)
-        builder.setMessage(message)
-        builder.setCancelable(false)
-        builder.setPositiveButton(getString(R.string.ok), onClickListener)
-        builder.create().show()
+        _defaultToolbar = toolbar
+        defaultToolbar.isVisible = true
     }
 
     fun initDefaultRecyclerView(recyclerView: RecyclerView, adapter: RecyclerView.Adapter<*>) {
@@ -163,40 +118,13 @@ abstract class BaseActivity : AppCompatActivity() {
         recyclerView.adapter = adapter
     }
 
-    open fun showDefaultErrorDialog(message: String) {
-        AlertDialog.Builder(context)
-            .setTitle(getString(R.string.error))
-            .setMessage(message)
-            .setCancelable(false)
-            .setPositiveButton(getString(R.string.ok), null)
-            .create().show()
-    }
-
-    open fun buildDefaultDialog(
-        title: String?, message: String?,
-        okButton: String,
-        onClickListener: DialogInterface.OnClickListener?
-    ): AlertDialog.Builder {
-        val builder = AlertDialog.Builder(context)
-
-        if (title != null && title.isNotEmpty()) builder.setTitle(title)
-        if (message != null && message.isNotEmpty()) builder.setMessage(message)
-
-        builder.setCancelable(false)
-        builder.setPositiveButton(okButton, onClickListener)
-        return builder
-    }
-
-    fun getDeviceUtil() : DeviceUtilities {
-        return deviceUtilities
-    }
-
     open fun noInternetConnection(throwable: Throwable) {
         throwable.printStackTrace()
-        showShortToast(getString(R.string.an_error_occurred))
+        showShortToast(getString(R.string.no_internet_connection))
     }
 
     open fun loading(it: Boolean) {
+        hideKeyboard()
         baseActivityBinding.loadingDialogRelativeLayout.setVisible(it)
     }
 
@@ -204,12 +132,20 @@ abstract class BaseActivity : AppCompatActivity() {
         showDefaultErrorDialog(it.getFullMessage())
     }
 
-    open fun unauthorized(boolean: Boolean) {
-        buildDefaultDialog(null, getString(R.string.session_expired), getString(R.string.ok)
-            DialogInterface.OnClickListener { _, _ ->
-                showShortToast("Perform your logout at BaseActivity@unauthorized.")
-            })
-            .create().show()
+    open fun unauthorized() {
+        showDefaultDialog(getString(R.string.session_expired),
+            getString(R.string.please_login_again)) {
+            MainActivity.startActivity(this)
+        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        // Clear view binding references to prevent memory leaks
+        _baseActivityBinding = null
+        _defaultToolbarBinding = null
+        _defaultToolbar = null
+        _viewStubView = null
     }
 
 }

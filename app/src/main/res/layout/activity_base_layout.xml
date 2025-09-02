@@ -4,10 +4,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
-    <LinearLayout
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:layout_height="match_parent">
 
         <include
                 android:id="@+id/toolbar_layout"
@@ -17,16 +16,17 @@
                 android:id="@+id/base_view_stub"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:layout_marginTop="?attr/actionBarSize"
                 android:inflatedId="@+id/extraLayout"/>
 
-    </LinearLayout>
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
 
     <RelativeLayout
             android:id="@+id/loading_dialog_relative_layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="#bd111633"
+            android:background="#BD3E3E3E"
             android:clickable="true"
             android:focusable="true"
             android:focusableInTouchMode="true"
@@ -36,7 +36,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
-                android:indeterminateTint="@color/white"/>
+                android:indeterminateTint="@color/md_white_1000"/>
 
     </RelativeLayout>
 

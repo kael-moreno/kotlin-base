@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resources>
+    <!-- Minimalist Color System - Dark Mode (GitHub-inspired) -->
+
+    <!-- Primary colors - Light grays for dark theme -->
+    <color name="md_theme_primary">#F0F6FC</color>
+    <color name="md_theme_onPrimary">#0D1117</color>
+    <color name="md_theme_primaryContainer">#21262D</color>
+    <color name="md_theme_onPrimaryContainer">#F0F6FC</color>
+
+    <!-- Secondary colors - Medium grays -->
+    <color name="md_theme_secondary">#8B949E</color>
+    <color name="md_theme_onSecondary">#0D1117</color>
+    <color name="md_theme_secondaryContainer">#30363D</color>
+    <color name="md_theme_onSecondaryContainer">#F0F6FC</color>
+
+    <!-- Surface colors - Dark grays -->
+    <color name="md_theme_surface">#0D1117</color>
+    <color name="md_theme_onSurface">#F0F6FC</color>
+    <color name="md_theme_surfaceVariant">#21262D</color>
+    <color name="md_theme_onSurfaceVariant">#8B949E</color>
+
+    <!-- Background colors - Pure dark -->
+    <color name="md_theme_background">#0D1117</color>
+    <color name="md_theme_onBackground">#F0F6FC</color>
+
+    <!-- Error colors - Minimalist red for dark mode -->
+    <color name="md_theme_error">#FF7B72</color>
+    <color name="md_theme_onError">#0D1117</color>
+    <color name="md_theme_errorContainer">#490202</color>
+    <color name="md_theme_onErrorContainer">#FF7B72</color>
+
+    <!-- Outline colors - Dark grays -->
+    <color name="md_theme_outline">#30363D</color>
+    <color name="md_theme_outlineVariant">#21262D</color>
+
+    <!-- Legacy colors for backward compatibility -->
+    <color name="colorPrimary">@color/md_theme_primary</color>
+    <color name="colorPrimaryDark">@color/md_theme_primaryContainer</color>
+    <color name="colorAccent">@color/md_theme_secondary</color>
+    <color name="textAreaDark">@color/md_theme_onBackground</color>
+
+    <!-- Theme-specific semantic colors -->
+    <color name="divider">@color/md_theme_outline</color>
+    <color name="message_dialog">@color/md_theme_surfaceVariant</color>
+
+</resources>
