@@ -7,7 +7,6 @@ import androidx.activity.viewModels
 import androidx.lifecycle.lifecycleScope
 import com.coreproc.kotlin.kotlinbase.R
 import com.coreproc.kotlin.kotlinbase.databinding.ActivityMainBinding
-import com.coreproc.kotlin.kotlinbase.extensions.applyBottomInsets
 import com.coreproc.kotlin.kotlinbase.extensions.showDefaultDialog
 import com.coreproc.kotlin.kotlinbase.ui.base.BaseActivity
 import dagger.hilt.android.AndroidEntryPoint
@@ -33,10 +32,6 @@ class MainActivity : BaseActivity() {
 
     override fun initialize() {
         activityMainBinding = ActivityMainBinding.bind(getChildActivityView())
-
-        /** Apply bottom insets to views */
-        applyBottomInsets()
-
         initObservables()
         initClicks()
     }

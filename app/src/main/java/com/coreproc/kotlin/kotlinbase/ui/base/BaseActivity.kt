@@ -17,6 +17,7 @@ import com.coreproc.kotlin.kotlinbase.R
 import com.coreproc.kotlin.kotlinbase.data.remote.ErrorBody
 import com.coreproc.kotlin.kotlinbase.databinding.ActivityBaseLayoutBinding
 import com.coreproc.kotlin.kotlinbase.databinding.DefaultToolbarBinding
+import com.coreproc.kotlin.kotlinbase.extensions.applyWindowInsets
 import com.coreproc.kotlin.kotlinbase.extensions.setVisible
 import com.coreproc.kotlin.kotlinbase.extensions.showDefaultDialog
 import com.coreproc.kotlin.kotlinbase.extensions.showDefaultErrorDialog
@@ -77,7 +78,7 @@ abstract class BaseActivity : FragmentActivity() {
     fun initUi() {
         _defaultToolbar = defaultToolbarBinding.defaultToolbar
         baseActivityBinding.loadingDialogRelativeLayout.setOnTouchListener { _, _ -> true }
-
+        applyWindowInsets()
         initViewStub()
     }
 

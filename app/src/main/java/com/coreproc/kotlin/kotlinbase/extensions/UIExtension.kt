@@ -50,14 +50,22 @@ fun BaseActivity.applyWindowInsets() {
     val rootView = findViewById<View>(android.R.id.content)
     ViewCompat.setOnApplyWindowInsetsListener(rootView) { view, insets ->
         val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-        val navigationBars = insets.getInsets(WindowInsetsCompat.Type.navigationBars())
         val statusBars = insets.getInsets(WindowInsetsCompat.Type.statusBars())
+        val navigationInsets = insets.getInsets(WindowInsetsCompat.Type.navigationBars())
+        val imeInsets = insets.getInsets(WindowInsetsCompat.Type.ime())
+        val isKeyboardVisible = imeInsets.bottom > 0
+
+        val bottomInsets = if (isKeyboardVisible) {
+            imeInsets
+        } else {
+            navigationInsets
+        }
 
         view.updatePadding(
             left = systemBars.left,
             top = statusBars.top,
             right = systemBars.right,
-            bottom = navigationBars.bottom
+            bottom = bottomInsets.bottom
         )
         insets
     }
@@ -109,74 +117,9 @@ fun BaseActivity.configureSystemBarsForTheme() {
 }
 
 /**
- * Apply window insets to a specific view with custom padding handling
- */
-fun View.applySystemWindowInsets(
-    applyLeft: Boolean = true,
-    applyTop: Boolean = true,
-    applyRight: Boolean = true,
-    applyBottom: Boolean = true
-) {
-    ViewCompat.setOnApplyWindowInsetsListener(this) { view, insets ->
-        val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-
-        view.updatePadding(
-            left = if (applyLeft) systemBars.left else view.paddingLeft,
-            top = if (applyTop) systemBars.top else view.paddingTop,
-            right = if (applyRight) systemBars.right else view.paddingRight,
-            bottom = if (applyBottom) systemBars.bottom else view.paddingBottom
-        )
-        insets
-    }
-}
-
-/**
- * Apply window insets with margins instead of padding
- */
-fun View.applySystemWindowInsetsAsMargin(
-    applyLeft: Boolean = true,
-    applyTop: Boolean = true,
-    applyRight: Boolean = true,
-    applyBottom: Boolean = true
-) {
-    ViewCompat.setOnApplyWindowInsetsListener(this) { view, insets ->
-        val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-
-        view.updateLayoutParams<ViewGroup.MarginLayoutParams> {
-            leftMargin = if (applyLeft) systemBars.left else leftMargin
-            topMargin = if (applyTop) systemBars.top else topMargin
-            rightMargin = if (applyRight) systemBars.right else rightMargin
-            bottomMargin = if (applyBottom) systemBars.bottom else bottomMargin
-        }
-        insets
-    }
-}
-
-/**
  * Get system bar insets for manual handling
  */
 fun View.getSystemBarInsets(): WindowInsetsCompat? {
     return ViewCompat.getRootWindowInsets(this)
 }
 
-/**
- * Handle gesture navigation insets (Android 10+ gesture navigation)
- */
-fun BaseActivity.applyBottomInsets() {
-    val rootView = findViewById<View>(android.R.id.content)
-    ViewCompat.setOnApplyWindowInsetsListener(rootView) { view, insets ->
-        val navigationInsets = insets.getInsets(WindowInsetsCompat.Type.navigationBars())
-        val imeInsets = insets.getInsets(WindowInsetsCompat.Type.ime())
-        val isKeyboardVisible = imeInsets.bottom > 0
-
-        val bottomInsets = if (isKeyboardVisible) {
-            imeInsets
-        } else {
-            navigationInsets
-        }
-        view.updatePadding(
-            bottom = bottomInsets.bottom
-        )
-        insets
-    }
-}
