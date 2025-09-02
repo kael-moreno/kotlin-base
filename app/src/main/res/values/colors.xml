@@ -1,38 +1,38 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <resources>
-    <!-- Material 3 Color System - Light Mode -->
+    <!-- Minimalist Color System - Light Mode (GitHub-inspired) -->
 
-    <!-- Primary colors -->
-    <color name="md_theme_primary">#111633</color>
+    <!-- Primary colors - Dark grays for minimalist look -->
+    <color name="md_theme_primary">#24292F</color>
     <color name="md_theme_onPrimary">#FFFFFF</color>
-    <color name="md_theme_primaryContainer">#1C2453</color>
-    <color name="md_theme_onPrimaryContainer">#FFFFFF</color>
+    <color name="md_theme_primaryContainer">#F6F8FA</color>
+    <color name="md_theme_onPrimaryContainer">#24292F</color>
 
-    <!-- Secondary colors -->
-    <color name="md_theme_secondary">#EBBE2F</color>
-    <color name="md_theme_onSecondary">#000000</color>
-    <color name="md_theme_secondaryContainer">#F7E5AC</color>
-    <color name="md_theme_onSecondaryContainer">#000000</color>
+    <!-- Secondary colors - Medium grays -->
+    <color name="md_theme_secondary">#656D76</color>
+    <color name="md_theme_onSecondary">#FFFFFF</color>
+    <color name="md_theme_secondaryContainer">#EAEEF2</color>
+    <color name="md_theme_onSecondaryContainer">#24292F</color>
 
-    <!-- Surface colors -->
+    <!-- Surface colors - Pure whites and light grays -->
     <color name="md_theme_surface">#FFFFFF</color>
-    <color name="md_theme_onSurface">#0B0E22</color>
-    <color name="md_theme_surfaceVariant">#F5F5F5</color>
-    <color name="md_theme_onSurfaceVariant">#707070</color>
+    <color name="md_theme_onSurface">#24292F</color>
+    <color name="md_theme_surfaceVariant">#F6F8FA</color>
+    <color name="md_theme_onSurfaceVariant">#656D76</color>
 
-    <!-- Background colors -->
+    <!-- Background colors - Clean whites -->
     <color name="md_theme_background">#FFFFFF</color>
-    <color name="md_theme_onBackground">#0B0E22</color>
+    <color name="md_theme_onBackground">#24292F</color>
 
-    <!-- Error colors -->
-    <color name="md_theme_error">#BA1A1A</color>
+    <!-- Error colors - Minimalist red -->
+    <color name="md_theme_error">#D1242F</color>
     <color name="md_theme_onError">#FFFFFF</color>
-    <color name="md_theme_errorContainer">#FFDAD6</color>
-    <color name="md_theme_onErrorContainer">#410002</color>
+    <color name="md_theme_errorContainer">#FFEBE9</color>
+    <color name="md_theme_onErrorContainer">#24292F</color>
 
-    <!-- Outline colors -->
-    <color name="md_theme_outline">#7F7F7F</color>
-    <color name="md_theme_outlineVariant">#C8C9D0</color>
+    <!-- Outline colors - Light grays -->
+    <color name="md_theme_outline">#D1D9E0</color>
+    <color name="md_theme_outlineVariant">#EAEEF2</color>
 
     <!-- Legacy colors for backward compatibility -->
     <color name="colorPrimary">@color/md_theme_primary</color>
