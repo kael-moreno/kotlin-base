@@ -12,6 +12,7 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updateLayoutParams
 import androidx.core.view.updatePadding
 import com.coreproc.kotlin.kotlinbase.ui.base.BaseActivity
+import kotlin.math.PI
 
 fun Context.showShortToast( message: String) {
     Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
@@ -159,31 +160,20 @@ fun View.getSystemBarInsets(): WindowInsetsCompat? {
 }
 
 /**
- * Apply keyboard (IME) insets handling
- */
-fun View.applyKeyboardInsets(callback: ((Boolean, Int) -> Unit)? = null) {
-    ViewCompat.setOnApplyWindowInsetsListener(this) { view, insets ->
-        val imeInsets = insets.getInsets(WindowInsetsCompat.Type.ime())
-        val isKeyboardVisible = imeInsets.bottom > 0
-
-        // Apply bottom padding for keyboard
-        view.updatePadding(bottom = imeInsets.bottom)
-
-        // Optional callback for custom handling
-        callback?.invoke(isKeyboardVisible, imeInsets.bottom)
-
-        insets
-    }
-}
-
-/**
  * Handle gesture navigation insets (Android 10+ gesture navigation)
  */
 fun BaseActivity.applyBottomInsets() {
     val rootView = findViewById<View>(android.R.id.content)
     ViewCompat.setOnApplyWindowInsetsListener(rootView) { view, insets ->
-        val bottomInsets = insets.getInsets(WindowInsetsCompat.Type.navigationBars())
+        val navigationInsets = insets.getInsets(WindowInsetsCompat.Type.navigationBars())
+        val imeInsets = insets.getInsets(WindowInsetsCompat.Type.ime())
+        val isKeyboardVisible = imeInsets.bottom > 0
 
+        val bottomInsets = if (isKeyboardVisible) {
+            imeInsets
+        } else {
+            navigationInsets
+        }
         view.updatePadding(
             bottom = bottomInsets.bottom
         )

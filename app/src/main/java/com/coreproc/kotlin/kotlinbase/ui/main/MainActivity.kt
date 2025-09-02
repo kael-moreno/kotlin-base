@@ -34,7 +34,7 @@ class MainActivity : BaseActivity() {
     override fun initialize() {
         activityMainBinding = ActivityMainBinding.bind(getChildActivityView())
 
-        /** Apply bottom insets to the root view to handle devices with gesture navigation */
+        /** Apply bottom insets to views */
         applyBottomInsets()
 
         initObservables()
