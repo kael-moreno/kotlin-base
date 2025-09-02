@@ -4,13 +4,11 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import androidx.activity.viewModels
-import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import com.coreproc.kotlin.kotlinbase.R
 import com.coreproc.kotlin.kotlinbase.databinding.ActivityMainBinding
-import com.coreproc.kotlin.kotlinbase.extensions.applyWindowInsets
+import com.coreproc.kotlin.kotlinbase.extensions.applyBottomInsets
 import com.coreproc.kotlin.kotlinbase.extensions.showDefaultDialog
-import com.coreproc.kotlin.kotlinbase.extensions.showShortToast
 import com.coreproc.kotlin.kotlinbase.ui.base.BaseActivity
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.launchIn
@@ -35,11 +33,12 @@ class MainActivity : BaseActivity() {
 
     override fun initialize() {
         activityMainBinding = ActivityMainBinding.bind(getChildActivityView())
-        applyWindowInsets()
+
+        /** Apply bottom insets to the root view to handle devices with gesture navigation */
+        applyBottomInsets()
+
         initObservables()
         initClicks()
-
-        // Example usage of AppPreferences
     }
 
     private fun initObservables() {

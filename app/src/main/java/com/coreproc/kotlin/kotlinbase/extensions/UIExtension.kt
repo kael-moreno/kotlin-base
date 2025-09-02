@@ -179,20 +179,14 @@ fun View.applyKeyboardInsets(callback: ((Boolean, Int) -> Unit)? = null) {
 /**
  * Handle gesture navigation insets (Android 10+ gesture navigation)
  */
-fun View.applyGestureInsets() {
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-        ViewCompat.setOnApplyWindowInsetsListener(this) { view, insets ->
-            val gestureInsets = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-                insets.getInsets(WindowInsetsCompat.Type.systemGestures())
-            } else {
-                insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            }
+fun BaseActivity.applyBottomInsets() {
+    val rootView = findViewById<View>(android.R.id.content)
+    ViewCompat.setOnApplyWindowInsetsListener(rootView) { view, insets ->
+        val bottomInsets = insets.getInsets(WindowInsetsCompat.Type.navigationBars())
 
-            view.updatePadding(
-                left = gestureInsets.left,
-                right = gestureInsets.right
-            )
-            insets
-        }
+        view.updatePadding(
+            bottom = bottomInsets.bottom
+        )
+        insets
     }
 }
