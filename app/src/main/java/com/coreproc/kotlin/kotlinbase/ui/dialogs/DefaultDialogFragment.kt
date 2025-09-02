@@ -1,11 +1,17 @@
 package com.coreproc.kotlin.kotlinbase.ui.dialogs
 
-import android.app.Dialog
 import android.os.Bundle
-import androidx.appcompat.app.AlertDialog
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.fragment.app.DialogFragment
+import com.coreproc.kotlin.kotlinbase.databinding.DialogDefaultBinding
 
 class DefaultDialogFragment : DialogFragment() {
+
+    private var _binding: DialogDefaultBinding? = null
+    private val binding get() = _binding!!
 
     private var title: String? = null
     private var message: String? = null
@@ -17,36 +23,70 @@ class DefaultDialogFragment : DialogFragment() {
     private var neutralButtonClickListener: (() -> Unit)? = null
     private var isCancelable: Boolean = true
 
-    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val builder = AlertDialog.Builder(requireContext())
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        _binding = DialogDefaultBinding.inflate(inflater, container, false)
+        return binding.root
+    }
 
-        title?.let { builder.setTitle(it) }
-        message?.let { builder.setMessage(it) }
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        setupDialog()
+    }
 
+    private fun setupDialog() {
+        // Set title
+        title?.let {
+            binding.textViewTitle.text = it
+            binding.textViewTitle.isVisible = true
+        }
+
+        // Set message
+        message?.let {
+            binding.textViewMessage.text = it
+            binding.textViewMessage.isVisible = true
+        }
+
+        // Set positive button
         positiveButtonText?.let { text ->
-            builder.setPositiveButton(text) { dialog, _ ->
+            binding.buttonPositive.text = text
+            binding.buttonPositive.isVisible = true
+            binding.buttonPositive.setOnClickListener {
                 positiveButtonClickListener?.invoke()
-                dialog.dismiss()
+                dismiss()
             }
         }
 
+        // Set negative button
         negativeButtonText?.let { text ->
-            builder.setNegativeButton(text) { dialog, _ ->
+            binding.buttonNegative.text = text
+            binding.buttonNegative.isVisible = true
+            binding.buttonNegative.setOnClickListener {
                 negativeButtonClickListener?.invoke()
-                dialog.dismiss()
+                dismiss()
             }
         }
 
+        // Set neutral button
         neutralButtonText?.let { text ->
-            builder.setNeutralButton(text) { dialog, _ ->
+            binding.buttonNeutral.text = text
+            binding.buttonNeutral.isVisible = true
+            binding.buttonNeutral.setOnClickListener {
                 neutralButtonClickListener?.invoke()
-                dialog.dismiss()
+                dismiss()
             }
         }
 
-        val dialog = builder.create()
-        dialog.setCancelable(isCancelable)
-        return dialog
+        // Set cancelable
+        dialog?.setCancelable(isCancelable)
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
     class Builder {

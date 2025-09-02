@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="@dimen/material_spacing_large"
+    android:background="@android:color/white"
+    android:layout_marginStart="@dimen/dialog_horizontal_margin"
+    android:layout_marginEnd="@dimen/dialog_horizontal_margin"
+    android:minWidth="@dimen/dialog_min_width"
+    android:maxWidth="@dimen/dialog_max_width">
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/textViewTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:text="Dialog Title"
+        android:textSize="@dimen/material_text_size_subtitle_1"
+        android:textStyle="bold"
+        android:textColor="@android:color/black"
+        android:layout_marginBottom="@dimen/material_spacing_medium"
+        android:visibility="gone" />
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/textViewMessage"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:text="Dialog message goes here"
+        android:textColor="@android:color/black"
+        android:layout_marginBottom="24dp"
+        android:visibility="gone" />
+
+    <LinearLayout
+        android:id="@+id/layoutButtons"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="end">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/buttonNeutral"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Neutral"
+            android:visibility="gone"
+            android:layout_marginEnd="8dp" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/buttonNegative"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            android:text="@string/cancel"
+            android:layout_marginEnd="8dp" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/buttonPositive"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/ok"
+            android:visibility="gone" />
+
+    </LinearLayout>
+
+</LinearLayout>

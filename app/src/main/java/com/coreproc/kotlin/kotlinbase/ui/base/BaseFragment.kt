@@ -9,13 +9,14 @@ import androidx.viewbinding.ViewBinding
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-abstract class BaseFragment<VB : ViewBinding>(
-    private val bindingInflater: (LayoutInflater, ViewGroup?, Boolean) -> VB
-) : Fragment() {
+abstract class BaseFragment : Fragment() {
 
-    private var _binding: VB? = null
-    protected val binding get() = _binding!!
+    private var _binding: ViewBinding? = null
 
+    @Suppress("UNCHECKED_CAST")
+    protected fun <VB : ViewBinding> getBinding(): VB = _binding as VB
+
+    protected abstract fun createBinding(inflater: LayoutInflater, container: ViewGroup?): ViewBinding
     abstract fun initialize()
 
     override fun onCreateView(
@@ -23,8 +24,8 @@ abstract class BaseFragment<VB : ViewBinding>(
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = bindingInflater(inflater, container, false)
-        return binding.root
+        _binding = createBinding(inflater, container)
+        return _binding!!.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
