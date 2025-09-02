@@ -31,6 +31,23 @@ fun FragmentActivity.showDefaultDialog(
         .show(supportFragmentManager, DefaultDialogFragment::class.java.simpleName)
 }
 
+fun FragmentActivity.showDefaultDialog(
+    title: String, message: String,
+    onOkClick: () -> Unit,
+    onCancelClick: () -> Unit
+) {
+    buildDefaultDialog(
+        title = title,
+        message = message,
+        okButton = getString(R.string.ok),
+        onOkClick = onOkClick,
+        cancelButton = getString(R.string.cancel),
+        onCancelClick = onCancelClick
+    )
+        .build()
+        .show(supportFragmentManager, DefaultDialogFragment::class.java.simpleName)
+}
+
 fun FragmentActivity.buildDefaultDialog(
     title: String?, message: String?,
     okButton: String,

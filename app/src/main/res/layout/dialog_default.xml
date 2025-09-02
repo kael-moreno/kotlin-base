@@ -37,6 +37,7 @@
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/buttonNeutral"
+            style="@style/AppTheme.Button.Text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Neutral"
@@ -45,6 +46,7 @@
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/buttonNegative"
+            style="@style/AppTheme.Button.Outlined"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:visibility="gone"
@@ -53,6 +55,7 @@
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/buttonPositive"
+            style="@style/AppTheme.Button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/ok"
