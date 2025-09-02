@@ -37,14 +37,14 @@ abstract class BaseActivity : FragmentActivity() {
     @Inject
     lateinit var appPreferences: AppPreferences
 
-    private var baseActivityBinding: ActivityBaseLayoutBinding? = null
-    private val _baseActivityBinding = baseActivityBinding!!
+    private var _baseActivityBinding: ActivityBaseLayoutBinding? = null
+    private val baseActivityBinding get() = _baseActivityBinding!!
 
-    private var defaultToolbarBinding: DefaultToolbarBinding? = null
-    private val _defaultToolbarBinding = defaultToolbarBinding!!
+    private var _defaultToolbarBinding: DefaultToolbarBinding? = null
+    private val defaultToolbarBinding get() = _defaultToolbarBinding!!
 
-    private var defaultToolbar: Toolbar? = null
-    private var _defaultToolbar = defaultToolbar!!
+    private var _defaultToolbar: Toolbar? = null
+    private val defaultToolbar get() = _defaultToolbar!!
 
     protected abstract fun getLayoutResource(): Int
 
@@ -52,54 +52,54 @@ abstract class BaseActivity : FragmentActivity() {
 
     protected lateinit var context: Context
 
-    private var viewStubView: View? = null
-    private val _viewStubView = viewStubView!!
+    private var _viewStubView: View? = null
+    private val viewStubView get() = _viewStubView!!
 
 
     override fun setTitle(titleId: Int) {
-        _defaultToolbarBinding.defaultToolbar.title = getString(titleId)
+        defaultToolbarBinding.defaultToolbar.title = getString(titleId)
     }
 
     override fun setTitle(title: CharSequence) {
-        _defaultToolbarBinding.defaultToolbar.title = title
+        defaultToolbarBinding.defaultToolbar.title = title
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         context = this
-        baseActivityBinding = ActivityBaseLayoutBinding.inflate(layoutInflater)
-        defaultToolbarBinding = _baseActivityBinding.toolbarLayout
-        setContentView(_baseActivityBinding.root)
+        _baseActivityBinding = ActivityBaseLayoutBinding.inflate(layoutInflater)
+        _defaultToolbarBinding = baseActivityBinding.toolbarLayout
+        setContentView(baseActivityBinding.root)
         initUi()
     }
 
     @SuppressLint("ClickableViewAccessibility")
     fun initUi() {
-        defaultToolbar = _defaultToolbarBinding.defaultToolbar
-        _baseActivityBinding.loadingDialogRelativeLayout.setOnTouchListener { _, _ -> true }
+        _defaultToolbar = defaultToolbarBinding.defaultToolbar
+        baseActivityBinding.loadingDialogRelativeLayout.setOnTouchListener { _, _ -> true }
 
         initViewStub()
     }
 
     private fun initViewStub() {
-        _baseActivityBinding.baseViewStub.layoutResource = getLayoutResource()
-        _baseActivityBinding.baseViewStub.setOnInflateListener { _, inflated ->
-            viewStubView = inflated
+        baseActivityBinding.baseViewStub.layoutResource = getLayoutResource()
+        baseActivityBinding.baseViewStub.setOnInflateListener { _, inflated ->
+            _viewStubView = inflated
             initialize()
         }
-        _baseActivityBinding.baseViewStub.inflate()
+        baseActivityBinding.baseViewStub.inflate()
     }
 
-    protected fun getChildActivityView(): View = _viewStubView
+    protected fun getChildActivityView(): View = viewStubView
 
     fun hideToolbar() {
-        _defaultToolbar.isVisible = false
+        defaultToolbar.isVisible = false
     }
 
     fun setToolbar(toolbar: Toolbar) {
         hideToolbar()
         _defaultToolbar = toolbar
-        _defaultToolbar.isVisible = true
+        defaultToolbar.isVisible = true
     }
 
     fun initDefaultRecyclerView(recyclerView: RecyclerView, adapter: RecyclerView.Adapter<*>) {
@@ -122,7 +122,7 @@ abstract class BaseActivity : FragmentActivity() {
     }
 
     open fun loading(it: Boolean) {
-        _baseActivityBinding.loadingDialogRelativeLayout.setVisible(it)
+        baseActivityBinding.loadingDialogRelativeLayout.setVisible(it)
     }
 
     open fun error(it: ErrorBody) {
@@ -139,10 +139,10 @@ abstract class BaseActivity : FragmentActivity() {
     override fun onDestroy() {
         super.onDestroy()
         // Clear view binding references to prevent memory leaks
-        baseActivityBinding = null
-        defaultToolbarBinding = null
-        defaultToolbar = null
-        viewStubView = null
+        _baseActivityBinding = null
+        _defaultToolbarBinding = null
+        _defaultToolbar = null
+        _viewStubView = null
     }
 
 }
