@@ -18,6 +18,7 @@ import com.coreproc.kotlin.kotlinbase.data.remote.ErrorBody
 import com.coreproc.kotlin.kotlinbase.databinding.ActivityBaseLayoutBinding
 import com.coreproc.kotlin.kotlinbase.databinding.DefaultToolbarBinding
 import com.coreproc.kotlin.kotlinbase.extensions.applyWindowInsets
+import com.coreproc.kotlin.kotlinbase.extensions.hideKeyboard
 import com.coreproc.kotlin.kotlinbase.extensions.setVisible
 import com.coreproc.kotlin.kotlinbase.extensions.showDefaultDialog
 import com.coreproc.kotlin.kotlinbase.extensions.showDefaultErrorDialog
@@ -123,6 +124,7 @@ abstract class BaseActivity : FragmentActivity() {
     }
 
     open fun loading(it: Boolean) {
+        hideKeyboard()
         baseActivityBinding.loadingDialogRelativeLayout.setVisible(it)
     }
 
