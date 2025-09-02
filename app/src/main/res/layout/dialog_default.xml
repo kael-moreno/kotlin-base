@@ -46,10 +46,9 @@
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/buttonNegative"
-            style="@style/AppTheme.Button.Outlined"
+            style="@style/AppTheme.Button.Outlined.Thick"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:visibility="gone"
             android:text="@string/cancel"
             android:layout_marginEnd="8dp" />
 
@@ -58,8 +57,7 @@
             style="@style/AppTheme.Button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/ok"
-            android:visibility="gone" />
+            android:text="@string/ok" />
 
     </LinearLayout>
 
