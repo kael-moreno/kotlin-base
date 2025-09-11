@@ -57,9 +57,6 @@ abstract class BaseComposeActivity : ComponentActivity() {
      * @param baseViewModel The BaseViewModel instance to bind to
      */
     protected fun bindViewModel(baseViewModel: BaseViewModel) {
-        baseViewModel.loading.receiveAsFlow().onEach {
-            // Loading state will be handled in the Compose UI
-        }.launchIn(lifecycleScope)
 
         baseViewModel.error.receiveAsFlow().onEach {
             // Error state will be handled in the Compose UI
@@ -92,8 +89,8 @@ abstract class BaseComposeActivity : ComponentActivity() {
     ) {
         val context = LocalContext.current
 
-        // Collect states from BaseViewModel channels
-        val loading by baseViewModel.loading.receiveAsFlow().collectAsStateWithLifecycle(initialValue = false)
+        // Collect states from BaseViewModel - use StateFlow for loading, Channels for others
+        val loading by baseViewModel.loadingStateFlow.collectAsStateWithLifecycle()
         val error by baseViewModel.error.receiveAsFlow().collectAsStateWithLifecycle(initialValue = null)
         val failure by baseViewModel.failure.receiveAsFlow().collectAsStateWithLifecycle(initialValue = null)
         val unauthorized by baseViewModel.unauthorized.receiveAsFlow().collectAsStateWithLifecycle(initialValue = false)

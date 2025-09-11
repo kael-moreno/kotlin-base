@@ -74,16 +74,34 @@ fun MainScreen(
     // Local state for building the display text
     var displayText by remember { mutableStateOf("Hello World!") }
     var apiKeyInfo by remember { mutableStateOf("") }
+    var showPunchlineDialog by remember { mutableStateOf(false) }
+    var punchlineText by remember { mutableStateOf("") }
 
     // Update display text when success response changes
     LaunchedEffect(successResponse) {
         successResponse?.let { response ->
             displayText = response.setup
+            punchlineText = response.punchline
+            showPunchlineDialog = true
         }
     }
 
     LaunchedEffect(hasApiKey) {
         apiKeyInfo = demonstrateAppPreferences(appPreferences)
+    }
+
+    // Punchline Dialog
+    if (showPunchlineDialog) {
+        AlertDialog(
+            onDismissRequest = { showPunchlineDialog = false },
+            title = { Text("Success") },
+            text = { Text(punchlineText) },
+            confirmButton = {
+                TextButton(onClick = { showPunchlineDialog = false }) {
+                    Text("OK")
+                }
+            }
+        )
     }
 
     Scaffold(

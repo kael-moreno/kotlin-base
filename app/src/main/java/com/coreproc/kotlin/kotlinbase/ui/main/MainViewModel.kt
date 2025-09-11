@@ -7,9 +7,10 @@ import com.coreproc.kotlin.kotlinbase.extensions.handleResponse
 import com.coreproc.kotlin.kotlinbase.ui.base.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -18,8 +19,8 @@ class MainViewModel
 @Inject
 constructor(private val apiUseCase: ApiUseCase) : BaseViewModel() {
 
-    private val successChannel = Channel<SampleResponse>()
-    val successFlow = successChannel.receiveAsFlow()
+    private val _successState = MutableStateFlow<SampleResponse?>(null)
+    val successFlow: StateFlow<SampleResponse?> = _successState.asStateFlow()
 
     fun getSomething() = viewModelScope.launch(Dispatchers.IO) {
         apiUseCase.run("")
@@ -31,7 +32,7 @@ constructor(private val apiUseCase: ApiUseCase) : BaseViewModel() {
                  * Example:
                  * when (resource) {
                  *    is ResponseHandler.Loading -> {
-                 *    loading.send(resource.loading)
+                 *    setLoading(resource.loading)
                  *    }
                  *    is ResponseHandler.Error -> {
                  *    error.send(resource.errorBody!!)
@@ -40,9 +41,9 @@ constructor(private val apiUseCase: ApiUseCase) : BaseViewModel() {
                  *    failure.send(resource.exception ?: Throwable(message = "Unknown error occurred"))
                  *    }
                  *    is ResponseHandler.Success -> {
-                 *    loading.send(false)
+                 *    setLoading(false)
                  *    resource.result?.let {
-                 *    successChannel.send(it)
+                 *    _successState.value = it
                  *    }
                  *    }
                  *    else -> {
@@ -54,7 +55,7 @@ constructor(private val apiUseCase: ApiUseCase) : BaseViewModel() {
                  */
 
                 resource.handleResponse(this@MainViewModel) {
-                    successChannel.send(it)
+                    _successState.value = it
                 }
             }
     }
