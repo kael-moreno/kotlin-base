@@ -13,7 +13,6 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -23,7 +22,6 @@ import com.coreproc.kotlin.kotlinbase.ui.theme.KotlinBaseTheme
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import timber.log.Timber
-import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainComposeActivity : BaseComposeActivity() {
@@ -62,7 +60,6 @@ fun MainScreen(
     viewModel: MainViewModel,
     appPreferences: AppPreferences
 ) {
-    val context = LocalContext.current
     val scope = rememberCoroutineScope()
 
     // Collect state from flows
@@ -155,25 +152,124 @@ fun MainScreen(
                 }
             }
 
-            // Retry button
+            // Action buttons
             Button(
-                onClick = { viewModel.getSomething() },
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Text("Retry API Call")
-            }
-
-            // Demo preferences button
-            OutlinedButton(
                 onClick = {
                     scope.launch {
-                        demonstrateAppPreferences(appPreferences)
+                        viewModel.getSomething()
                     }
                 },
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Text("Demo App Preferences")
+                Text("Get Random Joke")
             }
+
+            OutlinedButton(
+                onClick = {
+                    scope.launch {
+                        if (hasApiKey) {
+                            appPreferences.clearApiKey()
+                        } else {
+                            appPreferences.saveApiKey("sample_api_key_${System.currentTimeMillis()}")
+                        }
+                    }
+                },
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text(if (hasApiKey) "Logout" else "Login")
+            }
+
+            // Dummy content cards for testing scrolling
+            repeat(10) { index ->
+                Card(
+                    modifier = Modifier.fillMaxWidth(),
+                    elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+                ) {
+                    Column(
+                        modifier = Modifier.padding(16.dp)
+                    ) {
+                        Text(
+                            text = "Card ${index + 1}",
+                            style = MaterialTheme.typography.headlineSmall,
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.primary
+                        )
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Text(
+                            text = "This is dummy content for card ${index + 1}. " +
+                                    "Lorem ipsum dolor sit amet, consectetur adipiscing elit. " +
+                                    "Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. " +
+                                    "Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.",
+                            style = MaterialTheme.typography.bodyMedium
+                        )
+                        Spacer(modifier = Modifier.height(8.dp))
+
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.spacedBy(8.dp)
+                        ) {
+                            Button(
+                                onClick = {
+                                    Timber.d("Button ${index + 1} clicked")
+                                },
+                                modifier = Modifier.weight(1f)
+                            ) {
+                                Text("Action ${index + 1}")
+                            }
+
+                            OutlinedButton(
+                                onClick = {
+                                    Timber.d("Outlined button ${index + 1} clicked")
+                                },
+                                modifier = Modifier.weight(1f)
+                            ) {
+                                Text("Info ${index + 1}")
+                            }
+                        }
+                    }
+                }
+            }
+
+            // Additional dummy sections
+            Card(
+                modifier = Modifier.fillMaxWidth(),
+                elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+            ) {
+                Column(
+                    modifier = Modifier.padding(16.dp)
+                ) {
+                    Text(
+                        text = "Statistics",
+                        style = MaterialTheme.typography.headlineSmall,
+                        fontWeight = FontWeight.Bold
+                    )
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    repeat(5) { statIndex ->
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            Text(
+                                text = "Metric ${statIndex + 1}:",
+                                style = MaterialTheme.typography.bodyMedium
+                            )
+                            Text(
+                                text = "${(100..999).random()}",
+                                style = MaterialTheme.typography.bodyMedium,
+                                fontWeight = FontWeight.Bold,
+                                color = MaterialTheme.colorScheme.primary
+                            )
+                        }
+                        if (statIndex < 4) {
+                            Spacer(modifier = Modifier.height(8.dp))
+                        }
+                    }
+                }
+            }
+
+            // Final spacer for bottom padding
+            Spacer(modifier = Modifier.height(32.dp))
         }
     }
 }
