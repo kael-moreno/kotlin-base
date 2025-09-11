@@ -4,7 +4,6 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.foundation.layout.*
@@ -19,6 +18,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.coreproc.kotlin.kotlinbase.misc.AppPreferences
+import com.coreproc.kotlin.kotlinbase.ui.base.BaseComposeActivity
 import com.coreproc.kotlin.kotlinbase.ui.theme.KotlinBaseTheme
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -26,7 +26,7 @@ import timber.log.Timber
 import javax.inject.Inject
 
 @AndroidEntryPoint
-class MainComposeActivity : ComponentActivity() {
+class MainComposeActivity : BaseComposeActivity() {
 
     companion object {
         fun startActivity(context: Context) {
@@ -37,32 +37,26 @@ class MainComposeActivity : ComponentActivity() {
 
     private val viewModel: MainViewModel by viewModels()
 
-    @Inject
-    lateinit var appPreferences: AppPreferences
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        // Bind the ViewModel to handle base states
+        bindViewModel(viewModel)
+
         setContent {
             KotlinBaseTheme {
-
-                MainScreen(
-                    viewModel = viewModel,
-                    appPreferences = appPreferences
-                )
-
-
+                BaseContent(baseViewModel = viewModel) {
+                    MainScreen(
+                        viewModel = viewModel,
+                        appPreferences = appPreferences
+                    )
+                }
             }
         } // set content
 
         viewModel.getSomething()
     }
 }
-
-data class DialogState(
-    val title: String,
-    val message: String
-)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -72,7 +66,6 @@ fun MainScreen(
 ) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
-    var dialogState by remember { mutableStateOf<DialogState?>(null) }
 
     // Collect state from flows
     val successResponse by viewModel.successFlow.collectAsStateWithLifecycle(initialValue = null)
@@ -82,27 +75,10 @@ fun MainScreen(
     var displayText by remember { mutableStateOf("Hello World!") }
     var apiKeyInfo by remember { mutableStateOf("") }
 
-    // Show dialog when state is set
-    dialogState?.let { state ->
-        AlertDialog(
-            onDismissRequest = { dialogState = null },
-            title = { Text(state.title) },
-            text = { Text(state.message) },
-            confirmButton = {
-                TextButton(onClick = { dialogState = null }) {
-                    Text("OK")
-                }
-            }
-        )
-    }
-
     // Update display text when success response changes
     LaunchedEffect(successResponse) {
-        Timber.e("response: $successResponse")
         successResponse?.let { response ->
-            dialogState = DialogState("Success", response.punchline)
             displayText = response.setup
-
         }
     }
 
