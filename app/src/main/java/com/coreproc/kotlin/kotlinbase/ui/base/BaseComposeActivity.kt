@@ -13,6 +13,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -62,21 +63,67 @@ abstract class BaseComposeActivity : ComponentActivity() {
         baseViewModel: BaseViewModel,
         content: @Composable () -> Unit
     ) {
+        BaseContent(baseViewModels = listOf(baseViewModel), content = content)
+    }
+
+    /**
+     * Composable function that handles all the base UI states (loading, errors, dialogs) for multiple ViewModels.
+     * Should be called within the main content of your Compose UI.
+     *
+     * @param baseViewModels List of BaseViewModels to observe states from
+     * @param content The main content to display
+     */
+    @Composable
+    protected fun BaseContent(
+        baseViewModels: List<BaseViewModel>,
+        content: @Composable () -> Unit
+    ) {
         val context = LocalContext.current
 
-        // Collect states from BaseViewModel StateFlows
-        val loading by baseViewModel.loadingStateFlow.collectAsStateWithLifecycle()
-        val error by baseViewModel.errorStateFlow.collectAsStateWithLifecycle()
-        val failure by baseViewModel.failureStateFlow.collectAsStateWithLifecycle()
-        val unauthorized by baseViewModel.unauthorizedStateFlow.collectAsStateWithLifecycle()
-        val noInternetConnection by baseViewModel.noInternetConnectionStateFlow.collectAsStateWithLifecycle()
+        // Collect states from all BaseViewModels and combine them
+        val loadingStates = baseViewModels.map { it.loadingStateFlow.collectAsStateWithLifecycle() }
+        val errorStates = baseViewModels.map { it.errorStateFlow.collectAsStateWithLifecycle() }
+        val failureStates = baseViewModels.map { it.failureStateFlow.collectAsStateWithLifecycle() }
+        val unauthorizedStates = baseViewModels.map { it.unauthorizedStateFlow.collectAsStateWithLifecycle() }
+        val noInternetConnectionStates = baseViewModels.map { it.noInternetConnectionStateFlow.collectAsStateWithLifecycle() }
+
+        // Combine states - loading if ANY ViewModel is loading, error/failure from the FIRST non-null state
+        val isLoading by remember {
+            derivedStateOf {
+                loadingStates.any { it.value }
+            }
+        }
+
+        val currentError by remember {
+            derivedStateOf {
+                errorStates.firstNotNullOfOrNull { it.value }
+            }
+        }
+
+        val currentFailure by remember {
+            derivedStateOf {
+                failureStates.firstNotNullOfOrNull { it.value }
+            }
+        }
+
+        val isUnauthorized by remember {
+            derivedStateOf {
+                unauthorizedStates.any { it.value }
+            }
+        }
+
+        val currentNoInternetConnection by remember {
+            derivedStateOf {
+                noInternetConnectionStates.firstNotNullOfOrNull { it.value }
+            }
+        }
 
         // State for dialog management
         var dialogState by remember { mutableStateOf<DialogState?>(null) }
 
         // Handle error states
-        LaunchedEffect(error) {
-            error?.let {
+        LaunchedEffect(currentError) {
+            currentError?.let {
                 dialogState = DialogState(
                     title = context.getString(R.string.error),
                     message = it.getFullMessage(),
@@ -85,8 +132,8 @@ abstract class BaseComposeActivity : ComponentActivity() {
             }
         }
 
-        LaunchedEffect(failure) {
-            failure?.let {
+        LaunchedEffect(currentFailure) {
+            currentFailure?.let {
                 dialogState = DialogState(
                     title = context.getString(R.string.error),
                     message = it.message ?: "An unknown error occurred",
@@ -95,8 +142,8 @@ abstract class BaseComposeActivity : ComponentActivity() {
             }
         }
 
-        LaunchedEffect(unauthorized) {
-            if (unauthorized) {
+        LaunchedEffect(isUnauthorized) {
+            if (isUnauthorized) {
                 dialogState = DialogState(
                     title = context.getString(R.string.session_expired),
                     message = context.getString(R.string.please_login_again),
@@ -105,8 +152,8 @@ abstract class BaseComposeActivity : ComponentActivity() {
             }
         }
 
-        LaunchedEffect(noInternetConnection) {
-            noInternetConnection?.let {
+        LaunchedEffect(currentNoInternetConnection) {
+            currentNoInternetConnection?.let {
                 Toast.makeText(context, context.getString(R.string.no_internet_connection), Toast.LENGTH_SHORT).show()
             }
         }
@@ -116,7 +163,7 @@ abstract class BaseComposeActivity : ComponentActivity() {
             content()
 
             // Loading overlay
-            if (loading) {
+            if (isLoading) {
                 LoadingDialog()
             }
 
@@ -129,7 +176,8 @@ abstract class BaseComposeActivity : ComponentActivity() {
                             message = state.message,
                             onConfirm = {
                                 dialogState = null
-                                baseViewModel.clearUnauthorized()
+                                // Clear unauthorized state from all ViewModels
+                                baseViewModels.forEach { it.clearUnauthorized() }
                                 MainActivity.startActivity(context)
                             }
                         )
@@ -140,9 +188,11 @@ abstract class BaseComposeActivity : ComponentActivity() {
                             message = state.message,
                             onDismiss = {
                                 dialogState = null
-                                // Clear the error/failure state when dialog is dismissed
-                                baseViewModel.clearError()
-                                baseViewModel.clearFailure()
+                                // Clear error/failure state from all ViewModels
+                                baseViewModels.forEach {
+                                    it.clearError()
+                                    it.clearFailure()
+                                }
                             }
                         )
                     }

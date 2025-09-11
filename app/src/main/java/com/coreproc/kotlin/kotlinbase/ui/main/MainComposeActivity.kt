@@ -42,12 +42,13 @@ class MainComposeActivity : BaseComposeActivity() {
 
         setContent {
             KotlinBaseTheme {
-                BaseContent(baseViewModel = viewModel) {
+                BaseContent(baseViewModels = listOf(viewModel)) {
                     MainScreen(
                         viewModel = viewModel,
                         appPreferences = appPreferences
                     )
                 }
+
             }
         } // set content
 
