@@ -40,9 +40,6 @@ class MainComposeActivity : BaseComposeActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // Bind the ViewModel to handle base states
-        bindViewModel(viewModel)
-
         setContent {
             KotlinBaseTheme {
                 BaseContent(baseViewModel = viewModel) {
