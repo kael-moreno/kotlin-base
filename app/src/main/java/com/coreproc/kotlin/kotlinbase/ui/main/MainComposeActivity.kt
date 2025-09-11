@@ -12,21 +12,17 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.lifecycleScope
 import com.coreproc.kotlin.kotlinbase.misc.AppPreferences
-import com.coreproc.kotlin.kotlinbase.data.remote.model.SampleResponse
 import com.coreproc.kotlin.kotlinbase.ui.theme.KotlinBaseTheme
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -49,38 +45,17 @@ class MainComposeActivity : ComponentActivity() {
 
         setContent {
             KotlinBaseTheme {
-                var dialogState by remember { mutableStateOf<DialogState?>(null) }
-
-                // Collect success responses and show dialogs
-                LaunchedEffect(viewModel) {
-                    viewModel.successFlow.collect { response ->
-                        dialogState = DialogState("Success", response.punchline)
-                    }
-                }
 
                 MainScreen(
                     viewModel = viewModel,
-                    appPreferences = appPreferences,
-                    onShowDialog = { title, message ->
-                        dialogState = DialogState(title, message)
-                    }
+                    appPreferences = appPreferences
                 )
 
-                // Show dialog when state is set
-                dialogState?.let { state ->
-                    AlertDialog(
-                        onDismissRequest = { dialogState = null },
-                        title = { Text(state.title) },
-                        text = { Text(state.message) },
-                        confirmButton = {
-                            TextButton(onClick = { dialogState = null }) {
-                                Text("OK")
-                            }
-                        }
-                    )
-                }
+
             }
-        }
+        } // set content
+
+        viewModel.getSomething()
     }
 }
 
@@ -93,11 +68,11 @@ data class DialogState(
 @Composable
 fun MainScreen(
     viewModel: MainViewModel,
-    appPreferences: AppPreferences,
-    onShowDialog: (String, String) -> Unit
+    appPreferences: AppPreferences
 ) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
+    var dialogState by remember { mutableStateOf<DialogState?>(null) }
 
     // Collect state from flows
     val successResponse by viewModel.successFlow.collectAsStateWithLifecycle(initialValue = null)
@@ -107,14 +82,32 @@ fun MainScreen(
     var displayText by remember { mutableStateOf("Hello World!") }
     var apiKeyInfo by remember { mutableStateOf("") }
 
+    // Show dialog when state is set
+    dialogState?.let { state ->
+        AlertDialog(
+            onDismissRequest = { dialogState = null },
+            title = { Text(state.title) },
+            text = { Text(state.message) },
+            confirmButton = {
+                TextButton(onClick = { dialogState = null }) {
+                    Text("OK")
+                }
+            }
+        )
+    }
+
     // Update display text when success response changes
     LaunchedEffect(successResponse) {
+        Timber.e("response: $successResponse")
         successResponse?.let { response ->
+            dialogState = DialogState("Success", response.punchline)
             displayText = response.setup
-            demonstrateAppPreferences(appPreferences) { info ->
-                apiKeyInfo = info
-            }
+
         }
+    }
+
+    LaunchedEffect(hasApiKey) {
+        apiKeyInfo = demonstrateAppPreferences(appPreferences)
     }
 
     Scaffold(
@@ -182,9 +175,7 @@ fun MainScreen(
             OutlinedButton(
                 onClick = {
                     scope.launch {
-                        demonstrateAppPreferences(appPreferences) { info ->
-                            apiKeyInfo = info
-                        }
+                        demonstrateAppPreferences(appPreferences)
                     }
                 },
                 modifier = Modifier.fillMaxWidth()
@@ -196,9 +187,8 @@ fun MainScreen(
 }
 
 private suspend fun demonstrateAppPreferences(
-    appPreferences: AppPreferences,
-    onInfoUpdate: (String) -> Unit
-) {
+    appPreferences: AppPreferences
+): String {
     var info = ""
 
     // Save a sample string to preferences
@@ -214,5 +204,5 @@ private suspend fun demonstrateAppPreferences(
         info += "\nUser has API Key - logged in!"
     }
 
-    onInfoUpdate(info)
+    return info
 }
