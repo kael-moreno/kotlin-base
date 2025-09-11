@@ -51,17 +51,6 @@ abstract class BaseComposeActivity : ComponentActivity() {
     }
 
     /**
-     * Binds the ViewModel's channels to the Compose UI handling methods.
-     * This sets up observers for loading, error, failure, unauthorized access, and no internet connection events.
-     *
-     * @param baseViewModel The BaseViewModel instance to bind to
-     */
-    protected fun bindViewModel(baseViewModel: BaseViewModel) {
-        // All state management is now handled in BaseContent composable using StateFlows
-        // This function is kept for consistency but no longer needs to set up channel observers
-    }
-
-    /**
      * Composable function that handles all the base UI states (loading, errors, dialogs).
      * Should be called within the main content of your Compose UI.
      *
