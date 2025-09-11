@@ -28,11 +28,11 @@ suspend fun Throwable.postError(baseViewModel: BaseViewModel, baseActivity: Base
     baseViewModel.setLoading(false)
     when (this) {
         is NotYetConnectedException, is UnknownHostException, is SocketTimeoutException, is ConnectionShutdownException, is IOException -> {
-            baseViewModel.noInternetConnection.send(this)
+            baseViewModel.setNoInternetConnection(this)
         }
         is ErrorBody -> {
             if (this.http_code == 401) {
-                baseViewModel.unauthorized.send(true)
+                baseViewModel.setUnauthorized(true)
             } else {
                 baseActivity.error(this)
             }
@@ -54,8 +54,8 @@ suspend fun Throwable.postError(baseViewModel: BaseViewModel, baseActivity: Base
 suspend fun <T> ResponseHandler<T>.handleResponse(baseViewModel: BaseViewModel, onSuccess: suspend (T) -> Unit) {
     when (this) {
         is ResponseHandler.Loading -> baseViewModel.setLoading(this.loading)
-        is ResponseHandler.Error -> baseViewModel.error.send(this.errorBody!!)
-        is ResponseHandler.Failure -> baseViewModel.failure.send(this.exception ?: Throwable(message = "Unknown error occurred"))
+        is ResponseHandler.Error -> baseViewModel.setError(this.errorBody!!)
+        is ResponseHandler.Failure -> baseViewModel.setFailure(this.exception ?: Throwable(message = "Unknown error occurred"))
         is ResponseHandler.Success -> {
             if (this.result != null) {
                 onSuccess(this.result)

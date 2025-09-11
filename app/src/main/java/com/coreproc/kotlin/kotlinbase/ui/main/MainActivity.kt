@@ -37,7 +37,6 @@ class MainActivity : BaseActivity() {
     }
 
     private fun initObservables() {
-        viewModel.bindActivity(this)
         viewModel.successFlow.onEach {
             //activityMainBinding.helloWorldTextView.text = it.setup
             //showDefaultDialog(getString(R.string.success), it.punchline)

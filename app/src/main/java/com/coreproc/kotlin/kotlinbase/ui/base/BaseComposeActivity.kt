@@ -57,22 +57,8 @@ abstract class BaseComposeActivity : ComponentActivity() {
      * @param baseViewModel The BaseViewModel instance to bind to
      */
     protected fun bindViewModel(baseViewModel: BaseViewModel) {
-
-        baseViewModel.error.receiveAsFlow().onEach {
-            // Error state will be handled in the Compose UI
-        }.launchIn(lifecycleScope)
-
-        baseViewModel.failure.receiveAsFlow().onEach {
-            // Failure state will be handled in the Compose UI
-        }.launchIn(lifecycleScope)
-
-        baseViewModel.unauthorized.receiveAsFlow().onEach {
-            // Unauthorized state will be handled in the Compose UI
-        }.launchIn(lifecycleScope)
-
-        baseViewModel.noInternetConnection.receiveAsFlow().onEach {
-            // No internet state will be handled in the Compose UI
-        }.launchIn(lifecycleScope)
+        // All state management is now handled in BaseContent composable using StateFlows
+        // This function is kept for consistency but no longer needs to set up channel observers
     }
 
     /**
@@ -89,12 +75,12 @@ abstract class BaseComposeActivity : ComponentActivity() {
     ) {
         val context = LocalContext.current
 
-        // Collect states from BaseViewModel - use StateFlow for loading, Channels for others
+        // Collect states from BaseViewModel StateFlows
         val loading by baseViewModel.loadingStateFlow.collectAsStateWithLifecycle()
-        val error by baseViewModel.error.receiveAsFlow().collectAsStateWithLifecycle(initialValue = null)
-        val failure by baseViewModel.failure.receiveAsFlow().collectAsStateWithLifecycle(initialValue = null)
-        val unauthorized by baseViewModel.unauthorized.receiveAsFlow().collectAsStateWithLifecycle(initialValue = false)
-        val noInternetConnection by baseViewModel.noInternetConnection.receiveAsFlow().collectAsStateWithLifecycle(initialValue = null)
+        val error by baseViewModel.errorStateFlow.collectAsStateWithLifecycle()
+        val failure by baseViewModel.failureStateFlow.collectAsStateWithLifecycle()
+        val unauthorized by baseViewModel.unauthorizedStateFlow.collectAsStateWithLifecycle()
+        val noInternetConnection by baseViewModel.noInternetConnectionStateFlow.collectAsStateWithLifecycle()
 
         // State for dialog management
         var dialogState by remember { mutableStateOf<DialogState?>(null) }
@@ -154,6 +140,7 @@ abstract class BaseComposeActivity : ComponentActivity() {
                             message = state.message,
                             onConfirm = {
                                 dialogState = null
+                                baseViewModel.clearUnauthorized()
                                 MainActivity.startActivity(context)
                             }
                         )
@@ -162,7 +149,12 @@ abstract class BaseComposeActivity : ComponentActivity() {
                         ErrorDialog(
                             title = state.title,
                             message = state.message,
-                            onDismiss = { dialogState = null }
+                            onDismiss = {
+                                dialogState = null
+                                // Clear the error/failure state when dialog is dismissed
+                                baseViewModel.clearError()
+                                baseViewModel.clearFailure()
+                            }
                         )
                     }
                 }
