@@ -15,8 +15,9 @@
         <meta-data
                 android:name="io.sentry.auto-init"
                 android:value="false" />
-        <activity android:name="com.coreproc.kotlin.kotlinbase.ui.main.MainActivity"
-            android:exported="true">
+        <activity android:name="com.coreproc.kotlin.kotlinbase.ui.main.MainComposeActivity"
+            android:exported="true"
+            android:theme="@style/Theme.Material3.DynamicColors.DayNight">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <action android:name="android.intent.action.VIEW"/>
@@ -24,6 +25,10 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
+
+        <!-- Keep the original activity for reference/fallback -->
+        <activity android:name="com.coreproc.kotlin.kotlinbase.ui.main.MainActivity"
+            android:exported="false"/>
     </application>
 
 </manifest>

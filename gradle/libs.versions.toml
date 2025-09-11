@@ -1,4 +1,10 @@
 [versions]
+# Compose
+composeBom = "2024.09.03"
+composeActivity = "1.9.2"
+composeNavigation = "2.8.2"
+composeHilt = "1.2.0"
+
 datastorePreferencesCore = "1.1.7"
 lifecycle = "2.9.3"
 hilt = "2.57.1"
@@ -23,6 +29,18 @@ targetSdk = "36"
 compileSdk = "36"
 
 [libraries]
+# Compose
+compose-bom = { module = "androidx.compose:compose-bom", version.ref = "composeBom" }
+compose-ui = { module = "androidx.compose.ui:ui" }
+compose-ui-tooling-preview = { module = "androidx.compose.ui:ui-tooling-preview" }
+compose-ui-tooling = { module = "androidx.compose.ui:ui-tooling" }
+compose-ui-test-manifest = { module = "androidx.compose.ui:ui-test-manifest" }
+compose-material3 = { module = "androidx.compose.material3:material3" }
+compose-activity = { module = "androidx.activity:activity-compose", version.ref = "composeActivity" }
+compose-viewmodel = { module = "androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "lifecycle" }
+compose-navigation = { module = "androidx.navigation:navigation-compose", version.ref = "composeNavigation" }
+compose-hilt-navigation = { module = "androidx.hilt:hilt-navigation-compose", version.ref = "composeHilt" }
+
 androidx-datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastorePreferencesCore" }
 androidx-datastore-preferences-core = { module = "androidx.datastore:datastore-preferences-core", version.ref = "datastorePreferencesCore" }
 lifecycle-common = { module = "androidx.lifecycle:lifecycle-common", version.ref = "lifecycle" }
