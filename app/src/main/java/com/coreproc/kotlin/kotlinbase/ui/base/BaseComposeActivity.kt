@@ -23,16 +23,11 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.lifecycleScope
 import com.coreproc.kotlin.kotlinbase.R
-import com.coreproc.kotlin.kotlinbase.data.remote.ErrorBody
 import com.coreproc.kotlin.kotlinbase.misc.AppPreferences
 import com.coreproc.kotlin.kotlinbase.ui.main.MainActivity
 import com.coreproc.kotlin.kotlinbase.utils.DeviceUtilities
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.flow.receiveAsFlow
 import javax.inject.Inject
 
 @AndroidEntryPoint
