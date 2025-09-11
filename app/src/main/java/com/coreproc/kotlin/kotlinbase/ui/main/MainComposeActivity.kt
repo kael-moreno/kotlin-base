@@ -7,8 +7,9 @@ import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -85,6 +86,22 @@ fun MainScreen(
         apiKeyInfo = demonstrateAppPreferences(appPreferences)
     }
 
+    // Dummy content cards for testing scrolling
+    val dummyCards = remember {
+        listOf(
+            "Features" to "Explore the latest features and functionality of our app.",
+            "Settings" to "Customize your preferences and configure app behavior.",
+            "Profile" to "Manage your account information and personal details.",
+            "Analytics" to "View insights and statistics about your app usage.",
+            "Notifications" to "Control how and when you receive app notifications.",
+            "Security" to "Manage your security settings and privacy preferences.",
+            "Help & Support" to "Get assistance and find answers to common questions.",
+            "About" to "Learn more about the app version and development team.",
+            "Feedback" to "Share your thoughts and suggestions for improvement.",
+            "Updates" to "Stay informed about the latest app updates and changes."
+        )
+    }
+
     // Punchline Dialog
     if (showPunchlineDialog) {
         AlertDialog(
@@ -106,81 +123,85 @@ fun MainScreen(
             )
         }
     ) { paddingValues ->
-        Column(
+        LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(paddingValues)
-                .padding(16.dp)
-                .verticalScroll(rememberScrollState()),
+                .padding(paddingValues),
+            contentPadding = PaddingValues(16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-
             // Main content text
-            Card(
-                modifier = Modifier.fillMaxWidth(),
-                elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
-            ) {
-                Column(
-                    modifier = Modifier.padding(16.dp)
+            item {
+                Card(
+                    modifier = Modifier.fillMaxWidth(),
+                    elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
                 ) {
-                    Text(
-                        text = "App Status",
-                        style = MaterialTheme.typography.headlineSmall,
-                        fontWeight = FontWeight.Bold
-                    )
-                    Spacer(modifier = Modifier.height(8.dp))
-                    Text(
-                        text = displayText,
-                        style = MaterialTheme.typography.bodyLarge
-                    )
-
-                    if (apiKeyInfo.isNotEmpty()) {
+                    Column(
+                        modifier = Modifier.padding(16.dp)
+                    ) {
+                        Text(
+                            text = "App Status",
+                            style = MaterialTheme.typography.headlineSmall,
+                            fontWeight = FontWeight.Bold
+                        )
                         Spacer(modifier = Modifier.height(8.dp))
                         Text(
-                            text = apiKeyInfo,
-                            style = MaterialTheme.typography.bodyMedium
+                            text = displayText,
+                            style = MaterialTheme.typography.bodyLarge
+                        )
+
+                        if (apiKeyInfo.isNotEmpty()) {
+                            Spacer(modifier = Modifier.height(8.dp))
+                            Text(
+                                text = apiKeyInfo,
+                                style = MaterialTheme.typography.bodyMedium
+                            )
+                        }
+
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Text(
+                            text = "User Status: ${if (hasApiKey) "Logged In" else "Logged Out"}",
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = if (hasApiKey) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.error
                         )
                     }
-
-                    Spacer(modifier = Modifier.height(8.dp))
-                    Text(
-                        text = "User Status: ${if (hasApiKey) "Logged In" else "Logged Out"}",
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = if (hasApiKey) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.error
-                    )
                 }
             }
 
             // Action buttons
-            Button(
-                onClick = {
-                    scope.launch {
-                        viewModel.getSomething()
-                    }
-                },
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Text("Get Random Joke")
-            }
-
-            OutlinedButton(
-                onClick = {
-                    scope.launch {
-                        if (hasApiKey) {
-                            appPreferences.clearApiKey()
-                        } else {
-                            appPreferences.saveApiKey("sample_api_key_${System.currentTimeMillis()}")
+            item {
+                Button(
+                    onClick = {
+                        scope.launch {
+                            viewModel.getSomething()
                         }
-                    }
-                },
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Text(if (hasApiKey) "Logout" else "Login")
+                    },
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text("Get Random Joke")
+                }
             }
 
-            // Dummy content cards for testing scrolling
-            repeat(10) { index ->
+            item {
+                OutlinedButton(
+                    onClick = {
+                        scope.launch {
+                            if (hasApiKey) {
+                                appPreferences.clearApiKey()
+                            } else {
+                                appPreferences.saveApiKey("sample_api_key_${System.currentTimeMillis()}")
+                            }
+                        }
+                    },
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text(if (hasApiKey) "Logout" else "Login")
+                }
+            }
+
+            // Dummy content cards using LazyColumn's items
+            itemsIndexed(dummyCards) { index, (title, description) ->
                 Card(
                     modifier = Modifier.fillMaxWidth(),
                     elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
@@ -189,17 +210,14 @@ fun MainScreen(
                         modifier = Modifier.padding(16.dp)
                     ) {
                         Text(
-                            text = "Card ${index + 1}",
+                            text = title,
                             style = MaterialTheme.typography.headlineSmall,
                             fontWeight = FontWeight.Bold,
                             color = MaterialTheme.colorScheme.primary
                         )
                         Spacer(modifier = Modifier.height(8.dp))
                         Text(
-                            text = "This is dummy content for card ${index + 1}. " +
-                                    "Lorem ipsum dolor sit amet, consectetur adipiscing elit. " +
-                                    "Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. " +
-                                    "Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.",
+                            text = description,
                             style = MaterialTheme.typography.bodyMedium
                         )
                         Spacer(modifier = Modifier.height(8.dp))
@@ -210,20 +228,20 @@ fun MainScreen(
                         ) {
                             Button(
                                 onClick = {
-                                    Timber.d("Button ${index + 1} clicked")
+                                    Timber.d("$title action clicked")
                                 },
                                 modifier = Modifier.weight(1f)
                             ) {
-                                Text("Action ${index + 1}")
+                                Text("Open $title")
                             }
 
                             OutlinedButton(
                                 onClick = {
-                                    Timber.d("Outlined button ${index + 1} clicked")
+                                    Timber.d("$title info clicked")
                                 },
                                 modifier = Modifier.weight(1f)
                             ) {
-                                Text("Info ${index + 1}")
+                                Text("Learn More")
                             }
                         }
                     }
@@ -231,45 +249,49 @@ fun MainScreen(
             }
 
             // Additional dummy sections
-            Card(
-                modifier = Modifier.fillMaxWidth(),
-                elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
-            ) {
-                Column(
-                    modifier = Modifier.padding(16.dp)
+            item {
+                Card(
+                    modifier = Modifier.fillMaxWidth(),
+                    elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
                 ) {
-                    Text(
-                        text = "Statistics",
-                        style = MaterialTheme.typography.headlineSmall,
-                        fontWeight = FontWeight.Bold
-                    )
-                    Spacer(modifier = Modifier.height(16.dp))
+                    Column(
+                        modifier = Modifier.padding(16.dp)
+                    ) {
+                        Text(
+                            text = "Statistics",
+                            style = MaterialTheme.typography.headlineSmall,
+                            fontWeight = FontWeight.Bold
+                        )
+                        Spacer(modifier = Modifier.height(16.dp))
 
-                    repeat(5) { statIndex ->
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.SpaceBetween
-                        ) {
-                            Text(
-                                text = "Metric ${statIndex + 1}:",
-                                style = MaterialTheme.typography.bodyMedium
-                            )
-                            Text(
-                                text = "${(100..999).random()}",
-                                style = MaterialTheme.typography.bodyMedium,
-                                fontWeight = FontWeight.Bold,
-                                color = MaterialTheme.colorScheme.primary
-                            )
-                        }
-                        if (statIndex < 4) {
-                            Spacer(modifier = Modifier.height(8.dp))
+                        repeat(5) { statIndex ->
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.SpaceBetween
+                            ) {
+                                Text(
+                                    text = "Metric ${statIndex + 1}:",
+                                    style = MaterialTheme.typography.bodyMedium
+                                )
+                                Text(
+                                    text = "${(100..999).random()}",
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    fontWeight = FontWeight.Bold,
+                                    color = MaterialTheme.colorScheme.primary
+                                )
+                            }
+                            if (statIndex < 4) {
+                                Spacer(modifier = Modifier.height(8.dp))
+                            }
                         }
                     }
                 }
             }
 
             // Final spacer for bottom padding
-            Spacer(modifier = Modifier.height(32.dp))
+            item {
+                Spacer(modifier = Modifier.height(32.dp))
+            }
         }
     }
 }
