@@ -57,10 +57,10 @@ suspend fun <T> ResponseHandler<T>.handleResponse(baseViewModel: BaseViewModel, 
         is ResponseHandler.Error -> baseViewModel.error.send(this.errorBody!!)
         is ResponseHandler.Failure -> baseViewModel.failure.send(this.exception ?: Throwable(message = "Unknown error occurred"))
         is ResponseHandler.Success -> {
-            baseViewModel.loading.send(false)
             if (this.result != null) {
                 onSuccess(this.result)
             }
+            baseViewModel.loading.send(false)
         }
     }
 }

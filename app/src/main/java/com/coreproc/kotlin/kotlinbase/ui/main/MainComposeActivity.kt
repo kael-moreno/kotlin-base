@@ -81,19 +81,6 @@ class MainComposeActivity : ComponentActivity() {
                 }
             }
         }
-
-        // Initialize observables
-        initObservables()
-    }
-
-    private fun initObservables() {
-        viewModel.successFlow.onEach { response ->
-            // Note: Dialog will be shown through the Compose state management
-            // We'll need to update this to work with the new dialog system
-        }.launchIn(lifecycleScope)
-
-        // Trigger initial data fetch
-        viewModel.getSomething()
     }
 }
 
