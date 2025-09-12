@@ -9,12 +9,12 @@ import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -123,7 +123,14 @@ fun MainScreen(
         modifier = Modifier.fillMaxSize(),
         topBar = {
             TopAppBar(
-                title = { Text("Kotlin Base - Compose") }
+                title = { Text("Kotlin Base - Compose") },
+                windowInsets = TopAppBarDefaults.windowInsets,
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = Color(0xFF24292F), // Dark background
+                    titleContentColor = Color.White,     // White text
+                    navigationIconContentColor = Color.White,
+                    actionIconContentColor = Color.White
+                )
             )
         },
         contentWindowInsets = WindowInsets(0, 0, 0, 0)
