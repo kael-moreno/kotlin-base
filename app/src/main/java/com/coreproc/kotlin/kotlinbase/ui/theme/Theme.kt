@@ -6,6 +6,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
 
@@ -67,6 +68,22 @@ fun KotlinBaseTheme(
     val colorScheme = when {
         darkTheme -> DarkColorScheme
         else -> LightColorScheme
+    }
+
+    val view = LocalView.current
+    if (!view.isInEditMode) {
+        SideEffect {
+            val window = (view.context as Activity).window
+            val insetsController = WindowCompat.getInsetsController(window, view)
+
+            // Set transparent status and navigation bars using the modern approach
+            WindowCompat.setDecorFitsSystemWindows(window, false)
+
+            // In light mode: top bar is dark, so status bar icons should be light (white)
+            // In dark mode: top bar is light, so status bar icons should be dark (black)
+            insetsController.isAppearanceLightStatusBars = darkTheme
+            insetsController.isAppearanceLightNavigationBars = darkTheme
+        }
     }
 
     MaterialTheme(
